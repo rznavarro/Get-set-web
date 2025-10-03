@@ -240,6 +240,12 @@ export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
           >
             {creatingPlan ? 'Creando...' : 'CREAR PLAN'}
           </button>
+          <button
+            onClick={onNavigateToPlanes}
+            className="px-6 py-3 rounded-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 hover:shadow-lg transition-all"
+          >
+            Ver Planes
+          </button>
         </div>
 
         {/* Executive Summary Response */}
