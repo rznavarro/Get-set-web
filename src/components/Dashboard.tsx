@@ -136,7 +136,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         quick_actions: quickActionsFormatted
       };
 
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
