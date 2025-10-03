@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
 
 interface Plan {
   id: string;
@@ -91,6 +92,35 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
     });
   };
 
+  const downloadAsPDF = (plan: Plan) => {
+    const doc = new jsPDF();
+    doc.text(`Plan: ${plan.title}`, 10, 10);
+    doc.text(`Fecha: ${formatDate(plan.createdAt)}`, 10, 20);
+
+    let yPosition = 30;
+    if (typeof plan.content === 'string') {
+      // Split text into lines that fit the page width
+      const lines = doc.splitTextToSize(plan.content, 180);
+      doc.text(lines, 10, yPosition);
+    } else {
+      // For JSON content, stringify it
+      const contentText = JSON.stringify(plan.content, null, 2);
+      const lines = doc.splitTextToSize(contentText, 180);
+      doc.text(lines, 10, yPosition);
+    }
+
+    doc.save(`${plan.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`);
+  };
+
+  const deletePlan = (planId: string) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este plan?')) {
+      const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
+      const updatedPlans = existingPlans.filter((plan: Plan) => plan.id !== planId);
+      localStorage.setItem('portfolio_ceo_plans', JSON.stringify(updatedPlans));
+      setPlans(updatedPlans);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -148,6 +178,20 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
                     <p className="text-sm text-gray-600">
                       Creado el {formatDate(plan.createdAt)}
                     </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => downloadAsPDF(plan)}
+                      className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                    >
+                      PDF
+                    </button>
+                    <button
+                      onClick={() => deletePlan(plan.id)}
+                      className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+                    >
+                      Eliminar
+                    </button>
                   </div>
                 </div>
 
