@@ -94,6 +94,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
 
   const downloadAsPDF = (plan: Plan) => {
     const doc = new jsPDF();
+    doc.setFontSize(8); // Reduced font size for better readability
     doc.text(`Plan: ${plan.title}`, 10, 10);
     doc.text(`Fecha: ${formatDate(plan.createdAt)}`, 10, 20);
 
