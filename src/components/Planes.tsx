@@ -40,6 +40,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
   const [creatingPlan, setCreatingPlan] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [webhookResponse, setWebhookResponse] = useState<string | null>(null);
+  const [creationResponse, setCreationResponse] = useState<string | null>(null);
 
   useEffect(() => {
     const savedPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
@@ -118,7 +119,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
         quick_actions: quickActionsFormatted
       };
 
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,6 +132,9 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
       }
 
       const result = await response.text();
+
+      // Set creation response for display
+      setCreationResponse(result);
 
       // Save response as plan
       const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
@@ -229,6 +233,16 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
             <div className="bg-white border border-gray-200 p-6 rounded-lg">
               <h2 className="text-xl font-semibold mb-4 text-black">Respuesta del Webhook</h2>
               <div className="text-black whitespace-pre-wrap">{webhookResponse}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Plan Creation Response */}
+        {creationResponse && (
+          <div className="mb-8">
+            <div className="bg-white border border-gray-200 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-black">Respuesta de Creación de Plan</h2>
+              <div className="text-black whitespace-pre-wrap">{creationResponse}</div>
             </div>
           </div>
         )}
