@@ -230,9 +230,27 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
         {/* Webhook Response */}
         {webhookResponse && (
           <div className="mb-8">
-            <div className="bg-white border border-gray-200 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-black">Respuesta del Webhook</h2>
-              <div className="text-black whitespace-pre-wrap">{webhookResponse}</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-semibold text-black">Respuesta del Webhook</h2>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => downloadAsPDF({ id: 'webhook-response', title: 'Respuesta del Webhook', content: webhookResponse, createdAt: new Date().toISOString() })}
+                    className="px-3 py-1 bg-black text-white text-sm rounded hover:bg-gray-800 transition-colors"
+                  >
+                    PDF
+                  </button>
+                  <button
+                    onClick={() => setWebhookResponse(null)}
+                    className="px-3 py-1 bg-black text-white text-sm rounded hover:bg-gray-800 transition-colors"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">{webhookResponse}</div>
+              </div>
             </div>
           </div>
         )}
@@ -240,9 +258,27 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
         {/* Plan Creation Response */}
         {creationResponse && (
           <div className="mb-8">
-            <div className="bg-white border border-gray-200 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-black">Respuesta de Creación de Plan</h2>
-              <div className="text-black whitespace-pre-wrap">{creationResponse}</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-semibold text-black">Respuesta de Creación de Plan</h2>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => downloadAsPDF({ id: 'creation-response', title: 'Respuesta de Creación de Plan', content: creationResponse, createdAt: new Date().toISOString() })}
+                    className="px-3 py-1 bg-black text-white text-sm rounded hover:bg-gray-800 transition-colors"
+                  >
+                    PDF
+                  </button>
+                  <button
+                    onClick={() => setCreationResponse(null)}
+                    className="px-3 py-1 bg-black text-white text-sm rounded hover:bg-gray-800 transition-colors"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">{creationResponse}</div>
+              </div>
             </div>
           </div>
         )}
