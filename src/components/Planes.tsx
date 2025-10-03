@@ -67,7 +67,17 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
 
     } catch (error) {
       console.error('Error creating plan:', error);
-      alert('Error al crear el plan. Intenta nuevamente.');
+      // Save error response as plan
+      const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
+      const errorPlan = {
+        id: `plan-error-${Date.now()}`,
+        title: `Error en Plan ${existingPlans.length + 1}`,
+        content: { error: 'Error al crear el plan', details: (error as Error).message },
+        createdAt: new Date().toISOString()
+      };
+      existingPlans.push(errorPlan);
+      localStorage.setItem('portfolio_ceo_plans', JSON.stringify(existingPlans));
+      setPlans(existingPlans);
     } finally {
       setCreatingPlan(false);
     }
