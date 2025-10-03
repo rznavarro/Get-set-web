@@ -17,7 +17,7 @@ interface DashboardProps {
   userCode: string;
   onLogout: () => void;
   onEditMetrics: () => void;
-  onNavigateToPlanes: () => void;
+  onNavigateToPlanes: (response?: string) => void;
   onDataLoaded?: (data: AnalysisData) => void;
   onFinancialMetricsUpdate?: (metrics: FinancialMetrics) => void;
 }
@@ -222,19 +222,27 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
       quick_actions: quickActionsFormatted
     };
 
+    let responseText = '';
     try {
-      await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(currentData),
       });
+
+      if (response.ok) {
+        responseText = await response.text();
+      } else {
+        responseText = `Error: ${response.status} ${response.statusText}`;
+      }
     } catch (error) {
       console.error('Error sending data to CeoPremium3:', error);
+      responseText = `Error: ${error}`;
     }
 
-    onNavigateToPlanes();
+    onNavigateToPlanes(responseText);
   };
 
   if (loading) {

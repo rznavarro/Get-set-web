@@ -39,10 +39,19 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
   const [plans, setPlans] = useState<Plan[]>([]);
   const [creatingPlan, setCreatingPlan] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [webhookResponse, setWebhookResponse] = useState<string | null>(null);
 
   useEffect(() => {
     const savedPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
     setPlans(savedPlans);
+
+    // Load webhook response from localStorage
+    const response = localStorage.getItem('planes_webhook_response');
+    if (response) {
+      setWebhookResponse(response);
+      // Clear it after displaying
+      localStorage.removeItem('planes_webhook_response');
+    }
   }, []);
 
   const handleShowForm = () => {
@@ -214,6 +223,16 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
 
       {/* Main Content */}
       <main className="px-8 py-8">
+        {/* Webhook Response */}
+        {webhookResponse && (
+          <div className="mb-8">
+            <div className="bg-white border border-gray-200 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-black">Respuesta del Webhook</h2>
+              <div className="text-black whitespace-pre-wrap">{webhookResponse}</div>
+            </div>
+          </div>
+        )}
+
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-black">Mis Planes</h1>
           <button

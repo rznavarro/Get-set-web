@@ -57,7 +57,13 @@ function App() {
   };
 
   const navigateToDashboard = () => setCurrentScreen('dashboard');
-  const navigateToPlanes = () => setCurrentScreen('planes');
+  const navigateToPlanes = (response?: string) => {
+    if (response) {
+      // Store the response for Planes component
+      localStorage.setItem('planes_webhook_response', response);
+    }
+    setCurrentScreen('planes');
+  };
   const handleDataUpdate = (data: AnalysisData) => setDashboardData(data);
   const handleFinancialMetricsUpdate = (metrics: FinancialMetrics) => setFinancialMetrics(metrics);
 
