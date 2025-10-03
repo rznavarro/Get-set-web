@@ -103,12 +103,12 @@ export function OpportunityList({ data }: OpportunityListProps) {
       <div className="grid grid-cols-2 gap-8">
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-navy uppercase tracking-wide font-dancing-script">
+            <h2 className="text-lg font-semibold text-black uppercase tracking-wide font-dancing-script">
               Top Opportunities
             </h2>
             <button
               onClick={() => setShowNewCritical(true)}
-              className="flex items-center space-x-1 text-navy hover:text-gray-600 transition-colors"
+              className="flex items-center space-x-1 text-black hover:text-gray-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span className="text-sm">Agregar</span>
@@ -117,7 +117,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
           
           <div className="space-y-4">
             {criticalActions.map((action) => (
-              <div key={action.id} className="border-l-4 border-green-500 pl-4">
+              <div key={action.id} className="border-l-4 border-black pl-4">
                 {editingCritical === action.id ? (
                   <div className="space-y-2">
                     <input
@@ -153,7 +153,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => setEditingCritical(null)}
-                        className="flex items-center space-x-1 text-green-600 hover:text-green-700"
+                        className="flex items-center space-x-1 text-black hover:text-gray-800"
                       >
                         <Check className="w-4 h-4" />
                       </button>
@@ -167,7 +167,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
                     </div>
                     <div className="ml-4 flex items-center space-x-2">
                       <div className="text-right">
-                        <div className="text-lg font-bold text-green-600">{action.impact}</div>
+                        <div className="text-lg font-bold text-black">{action.impact}</div>
                         <span className={`text-xs px-2 py-1 rounded ${
                           action.urgency === 'high' ? 'bg-gray-100 text-gray-700' :
                           action.urgency === 'medium' ? 'bg-gray-100 text-gray-700' :
@@ -179,7 +179,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
                       <div className="flex flex-col space-y-1">
                         <button
                           onClick={() => setEditingCritical(action.id)}
-                          className="text-gray-400 hover:text-navy"
+                          className="text-gray-400 hover:text-black"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
@@ -231,7 +231,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
                 <div className="flex space-x-2">
                   <button
                     onClick={addCriticalAction}
-                    className="px-3 py-1 bg-navy text-white rounded text-sm hover:bg-gray-600"
+                    className="px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800"
                   >
                     Agregar
                   </button>
@@ -249,12 +249,12 @@ export function OpportunityList({ data }: OpportunityListProps) {
 
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-navy uppercase tracking-wide font-dancing-script">
+            <h2 className="text-lg font-semibold text-black uppercase tracking-wide font-dancing-script">
               Quick Actions (Next 30 Days)
             </h2>
             <button
               onClick={() => setShowNewQuick(true)}
-              className="flex items-center space-x-1 text-navy hover:text-gray-600 transition-colors"
+              className="flex items-center space-x-1 text-black hover:text-gray-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span className="text-sm">Agregar</span>
@@ -265,7 +265,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
             {quickActions.map((action) => (
               <div key={action.id} className="flex items-center justify-between space-x-3">
                 <div className="flex items-center space-x-3 flex-1">
-                  <div className="w-2 h-2 bg-navy rounded-full"></div>
+                  <div className="w-2 h-2 bg-black rounded-full"></div>
                   {editingQuick === action.id ? (
                     <input
                       type="text"
@@ -283,7 +283,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
                 <div className="flex space-x-1">
                   <button
                     onClick={() => setEditingQuick(action.id)}
-                    className="text-gray-400 hover:text-navy"
+                    className="text-gray-400 hover:text-black"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -310,7 +310,7 @@ export function OpportunityList({ data }: OpportunityListProps) {
                 <div className="flex space-x-1">
                   <button
                     onClick={addQuickAction}
-                    className="px-3 py-1 bg-navy text-white rounded text-sm hover:bg-gray-600"
+                    className="px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800"
                   >
                     Agregar
                   </button>

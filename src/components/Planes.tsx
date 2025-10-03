@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
+import { AnalysisData } from '../lib/api';
+import { PlanCreationForm } from './PlanCreationForm';
 
 interface Plan {
   id: string;
@@ -10,20 +12,31 @@ interface Plan {
 
 interface PlanesProps {
   onNavigateToDashboard: () => void;
-  dashboardData: any;
+  dashboardData: AnalysisData | null;
   userName: string | null;
+  userMetrics: any;
+  financialMetrics: any;
 }
 
-export function Planes({ onNavigateToDashboard, dashboardData, userName }: PlanesProps) {
+export function Planes({ onNavigateToDashboard, dashboardData, userName, userMetrics, financialMetrics }: PlanesProps) {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [creatingPlan, setCreatingPlan] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const savedPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
     setPlans(savedPlans);
   }, []);
 
-  const handleCreatePlan = async () => {
+  const handleShowForm = () => {
+    setShowForm(true);
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+  };
+
+  const handleCreatePlan = async (formData: any) => {
     if (!dashboardData) {
       alert('No hay datos del dashboard disponibles');
       return;
@@ -31,7 +44,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
 
     setCreatingPlan(true);
     try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook/CeoPremium3', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +53,18 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
           action: 'create_plan',
           timestamp: new Date().toISOString(),
           userName: userName,
-          dashboardData: dashboardData
+          userCode: 'VORTEXIA',
+          dashboardData: dashboardData,
+          userMetrics: userMetrics,
+          financialMetrics: financialMetrics,
+          planFormData: formData,
+          completeDashboardInfo: {
+            executiveSummary: dashboardData?.analysis.executive_summary,
+            metrics: financialMetrics, // Use edited financial metrics instead of original
+            criticalActions: dashboardData?.analysis.critical_actions,
+            quickActions: dashboardData?.next_30_days,
+            userMetrics: userMetrics
+          }
         }),
       });
 
@@ -54,7 +78,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
       const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
       const newPlan = {
         id: `plan-${Date.now()}`,
-        title: `Plan ${existingPlans.length + 1}`,
+        title: formData.nombrePlan || `Plan ${existingPlans.length + 1}`,
         content: result,
         createdAt: new Date().toISOString()
       };
@@ -63,6 +87,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
 
       // Update local state
       setPlans(existingPlans);
+      setShowForm(false);
 
     } catch (error) {
       console.error('Error creating plan:', error);
@@ -70,13 +95,14 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
       const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
       const errorPlan = {
         id: `plan-error-${Date.now()}`,
-        title: `Error en Plan ${existingPlans.length + 1}`,
+        title: `Error en ${formData.nombrePlan || 'Plan'}`,
         content: `Error al crear el plan: ${(error as Error).message}`,
         createdAt: new Date().toISOString()
       };
       existingPlans.push(errorPlan);
       localStorage.setItem('portfolio_ceo_plans', JSON.stringify(existingPlans));
       setPlans(existingPlans);
+      setShowForm(false);
     } finally {
       setCreatingPlan(false);
     }
@@ -127,10 +153,10 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
       {/* Header */}
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-navy font-dancing-script">PLANES</span>
+          <span className="text-2xl font-bold text-black font-dancing-script">PLANES</span>
           <button
             onClick={onNavigateToDashboard}
-            className="px-4 py-2 bg-navy text-white rounded-lg hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
             Volver al Dashboard
           </button>
@@ -140,14 +166,14 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
       {/* Main Content */}
       <main className="px-8 py-8">
         <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-navy">Mis Planes</h1>
+          <h1 className="text-3xl font-bold text-black">Mis Planes</h1>
           <button
-            onClick={handleCreatePlan}
+            onClick={handleShowForm}
             disabled={creatingPlan}
             className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
               creatingPlan
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-green-600 hover:bg-green-700'
+                : 'bg-black hover:bg-gray-800'
             }`}
           >
             {creatingPlan ? 'Creando...' : 'Crear Nuevo Plan'}
@@ -158,7 +184,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">No tienes planes creados aún.</p>
             <button
-              onClick={handleCreatePlan}
+              onClick={handleShowForm}
               disabled={creatingPlan}
               className={`mt-4 px-6 py-3 rounded-lg font-semibold text-white transition-all ${
                 creatingPlan
@@ -175,7 +201,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
               <div key={plan.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h2 className="text-xl font-semibold text-navy mb-2">{plan.title}</h2>
+                    <h2 className="text-xl font-semibold text-black mb-2">{plan.title}</h2>
                     <p className="text-sm text-gray-600">
                       Creado el {formatDate(plan.createdAt)}
                     </p>
@@ -183,13 +209,13 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
                   <div className="flex space-x-2">
                     <button
                       onClick={() => downloadAsPDF(plan)}
-                      className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                      className="px-3 py-1 bg-black text-white text-sm rounded hover:bg-gray-800 transition-colors"
                     >
                       PDF
                     </button>
                     <button
                       onClick={() => deletePlan(plan.id)}
-                      className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+                      className="px-3 py-1 bg-black text-white text-sm rounded hover:bg-gray-800 transition-colors"
                     >
                       Eliminar
                     </button>
@@ -213,6 +239,14 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
           </div>
         )}
       </main>
+
+      {showForm && (
+        <PlanCreationForm
+          onSubmit={handleCreatePlan}
+          onCancel={handleFormCancel}
+          isSubmitting={creatingPlan}
+        />
+      )}
     </div>
   );
 }

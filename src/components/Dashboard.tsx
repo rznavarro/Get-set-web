@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MetricCard } from './MetricCard';
 import { OpportunityList } from './OpportunityList';
+import { MetricEditForm } from './MetricEditForm';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 
 interface DashboardProps {
@@ -8,6 +9,8 @@ interface DashboardProps {
   onLogout: () => void;
   onEditMetrics: () => void;
   onNavigateToPlanes: () => void;
+  onDataLoaded?: (data: AnalysisData) => void;
+  onFinancialMetricsUpdate?: (metrics: any) => void;
 }
 
 // Function to get executive summary personalized with user name
@@ -18,7 +21,7 @@ function getExecutiveSummary(userName: string | null, baseSummary: string): stri
   return baseSummary;
 }
 
-export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlanes }: DashboardProps) {
+export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlanes, onDataLoaded, onFinancialMetricsUpdate }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
@@ -29,6 +32,8 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   });
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
+  const [showMetricEdit, setShowMetricEdit] = useState(false);
+  const [financialMetrics, setFinancialMetrics] = useState<any>(null);
 
 
   useEffect(() => {
@@ -43,10 +48,24 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
 
         setData(analysisData);
 
+        // Notify parent component that data is loaded
+        if (onDataLoaded) {
+          onDataLoaded(analysisData);
+        }
+
         // Load metrics from localStorage
         const savedMetrics = localStorage.getItem('user_metrics');
         if (savedMetrics) {
           setMetrics(JSON.parse(savedMetrics));
+        }
+
+        // Load financial metrics from localStorage or initialize from API data
+        const savedFinancialMetrics = localStorage.getItem('financial_metrics');
+        if (savedFinancialMetrics) {
+          setFinancialMetrics(JSON.parse(savedFinancialMetrics));
+        } else {
+          // Initialize with API data if no saved data exists
+          setFinancialMetrics(analysisData.metrics);
         }
       } catch (error) {
         console.error('Error loading dashboard data:', error);
@@ -63,7 +82,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
 
     setGeneratingSummary(true);
     try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook/CeoPremium', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +91,8 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
           action: 'generate_executive_summary',
           timestamp: new Date().toISOString(),
           userCode: userCode,
-          dashboardData: data
+          dashboardData: data,
+          financialMetrics: financialMetrics
         }),
       });
 
@@ -89,6 +109,19 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     } finally {
       setGeneratingSummary(false);
     }
+  };
+
+  const handleSaveMetrics = (newMetrics: typeof financialMetrics) => {
+    setFinancialMetrics(newMetrics);
+    localStorage.setItem('financial_metrics', JSON.stringify(newMetrics));
+    if (onFinancialMetricsUpdate) {
+      onFinancialMetricsUpdate(newMetrics);
+    }
+    setShowMetricEdit(false);
+  };
+
+  const handleCancelMetricEdit = () => {
+    setShowMetricEdit(false);
   };
 
 
@@ -113,11 +146,11 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
       {/* Header */}
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-navy font-dancing-script">CEO Dashboard</span>
+          <span className="text-2xl font-bold text-black font-dancing-script">CEO Dashboard</span>
           <div className="flex items-center space-x-4">
             <div className="text-right">
               <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">CÓDIGO</div>
-              <div className="text-lg font-bold text-navy">{userCode}</div>
+              <div className="text-lg font-bold text-black">{userCode}</div>
             </div>
             <div className="flex space-x-2">
               <button
@@ -166,63 +199,73 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
 
         {/* Executive Summary */}
         <div className="mb-8">
-          <div className="bg-navy text-white p-6 rounded-lg">
+          <div className="bg-black text-white p-6 rounded-lg">
             <h1 className="text-xl font-semibold mb-2 font-dancing-script">EXECUTIVE SUMMARY</h1>
             <p className="text-lg">{data.analysis.executive_summary}</p>
           </div>
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-3 gap-6 mb-12">
-          <MetricCard
-            title="Current NOI"
-            value={data.metrics.current_noi}
-            insight="Monthly recurring income"
-          />
-          <MetricCard
-            title="NOI Opportunity"
-            value={data.metrics.noi_opportunity}
-            insight="Potential additional income"
-            isOpportunity={true}
-          />
-          <MetricCard
-            title="Portfolio ROI"
-            value={data.metrics.portfolio_roi}
-            insight="Annual return on investment"
-          />
-          <MetricCard
-            title="Vacancy Cost"
-            value={data.metrics.vacancy_cost}
-            insight="Monthly lost revenue"
-            hasAlert={true}
-          />
-          <MetricCard
-            title="Turnover Risk"
-            value={data.metrics.turnover_risk}
-            insight="Units requiring attention"
-            hasAlert={true}
-          />
-          <MetricCard
-            title="CapEx Due"
-            value={data.metrics.capex_due}
-            insight="Immediate capital required"
-            hasAlert={true}
-          />
-        </div>
+        {financialMetrics && (
+          <div className="grid grid-cols-3 gap-6 mb-12">
+            <MetricCard
+              title="Current NOI"
+              value={financialMetrics.current_noi}
+              insight="Monthly recurring income"
+            />
+            <MetricCard
+              title="NOI Opportunity"
+              value={financialMetrics.noi_opportunity}
+              insight="Potential additional income"
+              isOpportunity={true}
+            />
+            <MetricCard
+              title="Portfolio ROI"
+              value={financialMetrics.portfolio_roi}
+              insight="Annual return on investment"
+            />
+            <MetricCard
+              title="Vacancy Cost"
+              value={financialMetrics.vacancy_cost}
+              insight="Monthly lost revenue"
+              hasAlert={true}
+            />
+            <MetricCard
+              title="Turnover Risk"
+              value={financialMetrics.turnover_risk}
+              insight="Units requiring attention"
+              hasAlert={true}
+            />
+            <MetricCard
+              title="CapEx Due"
+              value={financialMetrics.capex_due}
+              insight="Immediate capital required"
+              hasAlert={true}
+            />
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="mb-8 flex space-x-4">
           <button
             onClick={handleGenerateExecutiveSummary}
-            disabled={generatingSummary}
+            disabled={generatingSummary || !financialMetrics}
             className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
-              generatingSummary
+              generatingSummary || !financialMetrics
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-black hover:bg-gray-800 hover:shadow-lg'
             }`}
           >
             {generatingSummary ? 'Generando...' : 'Generar Executive Summary'}
           </button>
+          {financialMetrics && (
+            <button
+              onClick={() => setShowMetricEdit(true)}
+              className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
+            >
+              Edit
+            </button>
+          )}
           <button
             onClick={onNavigateToPlanes}
             className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
@@ -245,6 +288,14 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         {/* Opportunities and Actions */}
         <OpportunityList data={data} />
       </main>
+
+      {showMetricEdit && (
+        <MetricEditForm
+          currentMetrics={financialMetrics}
+          onSave={handleSaveMetrics}
+          onCancel={handleCancelMetricEdit}
+        />
+      )}
     </div>
   );
 }
