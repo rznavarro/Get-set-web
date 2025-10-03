@@ -254,16 +254,7 @@ export function Dashboard({ formData }: DashboardProps) {
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold text-navy font-dancing-script">PORTFOLIO CEO</span>
-              <button
-                onClick={handleRegenerateSummary}
-                disabled={regenerating || !formData}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
-              >
-                {regenerating ? 'Generando...' : 'Generar Executive Summary'}
-              </button>
-            </div>
+            <span className="text-2xl font-bold text-navy font-dancing-script">PORTFOLIO CEO</span>
           </div>
           <div className="text-right">
             <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">TOTAL PORTFOLIO VALUE</div>
@@ -321,7 +312,11 @@ export function Dashboard({ formData }: DashboardProps) {
         </div>
 
         {/* Opportunities and Actions */}
-        <OpportunityList data={data} />
+        <OpportunityList
+          data={data}
+          onRegenerateSummary={handleRegenerateSummary}
+          regenerating={regenerating}
+        />
       </main>
     </div>
   );

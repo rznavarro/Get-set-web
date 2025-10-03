@@ -4,9 +4,11 @@ import { AnalysisData, CriticalAction, QuickAction, sendPlanToWebhook } from '..
 
 interface OpportunityListProps {
   data: AnalysisData;
+  onRegenerateSummary?: () => void;
+  regenerating?: boolean;
 }
 
-export function OpportunityList({ data }: OpportunityListProps) {
+export function OpportunityList({ data, onRegenerateSummary, regenerating }: OpportunityListProps) {
   // Load saved actions from localStorage or use default data
   const loadSavedActions = () => {
     const savedCritical = localStorage.getItem('portfolio_ceo_critical_actions');
@@ -382,25 +384,43 @@ export function OpportunityList({ data }: OpportunityListProps) {
         </div>
       </div>
 
-      {/* Create Plan Button */}
-      <div className="flex justify-center">
+      {/* Buttons */}
+      <div className="flex justify-center space-x-4">
+        <button
+          onClick={onRegenerateSummary}
+          disabled={regenerating}
+          className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold text-base transition-all ${
+            regenerating
+              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg'
+          }`}
+        >
+          {regenerating ? (
+            <>
+              <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+              <span>Generando...</span>
+            </>
+          ) : (
+            <span>Generar Executive Summary</span>
+          )}
+        </button>
         <button
           onClick={handleCreatePlan}
           disabled={sendingPlan}
-          className={`flex items-center space-x-2 px-8 py-4 rounded-lg font-semibold text-lg transition-all ${
-            sendingPlan 
-              ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+          className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold text-base transition-all ${
+            sendingPlan
+              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
               : 'bg-navy text-white hover:bg-gray-600 hover:shadow-lg'
           }`}
         >
           {sendingPlan ? (
             <>
-              <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
               <span>Enviando Plan...</span>
             </>
           ) : (
             <>
-              <AlertCircle className="w-5 h-5" />
+              <AlertCircle className="w-4 h-4" />
               <span className="font-dancing-script">CREAR PLAN</span>
             </>
           )}
