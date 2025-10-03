@@ -103,26 +103,37 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         action
       }));
 
+      const topOpportunities = criticalActions.map((action: any) => ({
+        titulo: action.action,
+        descripcion: action.details,
+        valor_anual: action.impact,
+        prioridad: action.urgency === 'high' ? 'ALTA' : action.urgency === 'medium' ? 'MEDIA' : 'BAJA'
+      }));
+
+      const quickActionsFormatted = quickActions.map((action: any) => ({
+        descripcion: action.action,
+        completada: false
+      }));
+
       const currentData = {
         action: 'generate_executive_summary',
         timestamp: new Date().toISOString(),
         userCode: userCode,
         executiveSummary: data.analysis.executive_summary,
-        financialMetrics: financialMetrics,
-        userMetrics: userMetrics,
-        topOpportunities: criticalActions,
-        quickActions: quickActions,
-        // Include all individual metrics for clarity
-        current_noi: financialMetrics?.current_noi,
-        noi_opportunity: financialMetrics?.noi_opportunity,
-        portfolio_roi: financialMetrics?.portfolio_roi,
-        vacancy_cost: financialMetrics?.vacancy_cost,
-        turnover_risk: financialMetrics?.turnover_risk,
-        capex_due: financialMetrics?.capex_due,
-        leads: userMetrics.leads,
-        visitas_agendadas: userMetrics.visitas_agendadas,
-        visitas_casa: userMetrics.visitas_casa,
-        ventas: userMetrics.ventas
+        metricas: {
+          current_noi: financialMetrics?.current_noi,
+          noi_opportunity: financialMetrics?.noi_opportunity,
+          portfolio_roi: financialMetrics?.portfolio_roi,
+          vacancy_cost: financialMetrics?.vacancy_cost,
+          turnover_risk: financialMetrics?.turnover_risk,
+          capex_due: financialMetrics?.capex_due,
+          leads: userMetrics.leads,
+          visitas_agendadas: userMetrics.visitas_agendadas,
+          visitas_casa: userMetrics.visitas_casa,
+          ventas: userMetrics.ventas
+        },
+        top_opportunities: topOpportunities,
+        quick_actions: quickActionsFormatted
       };
 
       const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
@@ -178,26 +189,37 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
       action
     })) || [];
 
+    const topOpportunities = criticalActions.map((action: any) => ({
+      titulo: action.action,
+      descripcion: action.details,
+      valor_anual: action.impact,
+      prioridad: action.urgency === 'high' ? 'ALTA' : action.urgency === 'medium' ? 'MEDIA' : 'BAJA'
+    }));
+
+    const quickActionsFormatted = quickActions.map((action: any) => ({
+      descripcion: action.action,
+      completada: false
+    }));
+
     const currentData = {
       action: 'navigate_to_planes',
       timestamp: new Date().toISOString(),
       userCode: userCode,
       executiveSummary: data?.analysis.executive_summary,
-      financialMetrics: financialMetrics,
-      userMetrics: userMetrics,
-      topOpportunities: criticalActions,
-      quickActions: quickActions,
-      // Include all individual metrics
-      current_noi: financialMetrics?.current_noi,
-      noi_opportunity: financialMetrics?.noi_opportunity,
-      portfolio_roi: financialMetrics?.portfolio_roi,
-      vacancy_cost: financialMetrics?.vacancy_cost,
-      turnover_risk: financialMetrics?.turnover_risk,
-      capex_due: financialMetrics?.capex_due,
-      leads: userMetrics.leads,
-      visitas_agendadas: userMetrics.visitas_agendadas,
-      visitas_casa: userMetrics.visitas_casa,
-      ventas: userMetrics.ventas
+      metricas: {
+        current_noi: financialMetrics?.current_noi,
+        noi_opportunity: financialMetrics?.noi_opportunity,
+        portfolio_roi: financialMetrics?.portfolio_roi,
+        vacancy_cost: financialMetrics?.vacancy_cost,
+        turnover_risk: financialMetrics?.turnover_risk,
+        capex_due: financialMetrics?.capex_due,
+        leads: userMetrics.leads,
+        visitas_agendadas: userMetrics.visitas_agendadas,
+        visitas_casa: userMetrics.visitas_casa,
+        ventas: userMetrics.ventas
+      },
+      top_opportunities: topOpportunities,
+      quick_actions: quickActionsFormatted
     };
 
     try {
