@@ -233,36 +233,53 @@ export function Dashboard({ formData }: DashboardProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <span className="text-2xl font-bold text-navy font-dancing-script">PORTFOLIO CEO</span>
-            {generatedSummary && (
-              <div className="flex items-center space-x-4">
-                <span className="text-lg font-semibold text-navy font-dancing-script">Resumenes ejecutivos</span>
-                <div className="flex space-x-2">
+            <div className="flex space-x-4">
+              {/* Resumenes ejecutivos section */}
+              <div className="bg-white border border-gray-200 rounded-lg p-3 min-w-[200px]">
+                <div className="text-sm font-semibold text-navy font-dancing-script mb-2">Resumenes ejecutivos</div>
+                {generatedSummary ? (
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-700 line-clamp-3">{generatedSummary}</p>
+                    <div className="flex space-x-1">
+                      <button
+                        onClick={downloadAsPDF}
+                        className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-medium"
+                      >
+                        PDF
+                      </button>
+                      <button
+                        onClick={downloadAsWord}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium"
+                      >
+                        Word
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-500">No generado</p>
+                )}
+              </div>
+              {/* Planes section */}
+              <div className="bg-white border border-gray-200 rounded-lg p-3 min-w-[200px]">
+                <div className="text-sm font-semibold text-navy font-dancing-script mb-2">Planes</div>
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-700">Acciones críticas: {data.analysis.critical_actions.length}</p>
+                  <p className="text-xs text-gray-700">Acciones rápidas: {data.next_30_days.length}</p>
                   <button
-                    onClick={downloadAsPDF}
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
+                    onClick={() => {/* TODO: Show plan details */}}
+                    className="text-xs text-navy hover:text-gray-600 underline"
                   >
-                    PDF
-                  </button>
-                  <button
-                    onClick={downloadAsWord}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
-                  >
-                    Word
+                    Ver plan
                   </button>
                 </div>
               </div>
-            )}
+            </div>
           </div>
           <div className="text-right">
             <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">TOTAL PORTFOLIO VALUE</div>
             <div className="text-4xl font-bold text-navy">{data.metrics.portfolio_value}</div>
           </div>
         </div>
-        {generatedSummary && (
-          <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-            <p className="text-gray-800">{generatedSummary}</p>
-          </div>
-        )}
       </header>
 
       {/* Main Content */}
