@@ -182,20 +182,46 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
 
   const downloadAsPDF = (plan: Plan) => {
     const doc = new jsPDF();
-    doc.setFontSize(8); // Reduced font size for better readability
-    doc.text(`Plan: ${plan.title}`, 10, 10);
-    doc.text(`Fecha: ${formatDate(plan.createdAt)}`, 10, 20);
 
-    const yPosition = 30;
+    // Set up fonts - using Helvetica as base, trying to simulate styles
+    doc.setFont('helvetica', 'bold');
+
+    // Title - simulating Dancing Script style with larger bold font
+    doc.setFontSize(24);
+    doc.text(`Plan: ${plan.title}`, 10, 20);
+
+    // Date
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${formatDate(plan.createdAt)}`, 10, 35);
+
+    let yPosition = 50;
+
     if (typeof plan.content === 'string') {
       // Split text into lines that fit the page width
       const lines = doc.splitTextToSize(plan.content, 180);
-      doc.text(lines, 10, yPosition);
+
+      // Body text - Arial equivalent (Helvetica) 12pt with 1.5 line spacing
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+
+      // Add lines with proper line spacing (1.5 = 18pt between lines)
+      lines.forEach((line: string) => {
+        doc.text(line, 10, yPosition);
+        yPosition += 9; // 12pt * 1.5 = 18pt, but adjusted for better fit
+      });
     } else {
       // For JSON content, stringify it
       const contentText = JSON.stringify(plan.content, null, 2);
       const lines = doc.splitTextToSize(contentText, 180);
-      doc.text(lines, 10, yPosition);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+
+      lines.forEach((line: string) => {
+        doc.text(line, 10, yPosition);
+        yPosition += 9;
+      });
     }
 
     doc.save(`${plan.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`);
