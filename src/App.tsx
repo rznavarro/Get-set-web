@@ -25,7 +25,7 @@ interface FormData {
   };
 }
 
-type AppScreen = 'login' | 'form' | 'dashboard';
+type AppScreen = 'login' | 'dashboard';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('login');
@@ -33,74 +33,35 @@ function App() {
 
   // Check initial state on app start
   useEffect(() => {
-    const loadData = async () => {
-      const loggedIn = localStorage.getItem('portfolio_ceo_logged_in') === 'true';
-      const savedInvestorId = localStorage.getItem('portfolio_ceo_investor_id');
+    const loggedIn = localStorage.getItem('portfolio_ceo_logged_in') === 'true';
+    if (loggedIn) {
+      setCurrentScreen('dashboard');
+      // Load saved data if available
       const savedFormData = localStorage.getItem('portfolio_ceo_form_data');
-      const isFirstTime = localStorage.getItem('portfolio_ceo_first_time') !== 'false';
-
-      if (!loggedIn) {
-        setCurrentScreen('login');
-        return;
-      }
-
-      // Try to load from Supabase first if we have an investor ID
-      if (savedInvestorId && !isFirstTime) {
-        try {
-          const supabaseData = await getInvestorData(savedInvestorId);
-          if (supabaseData) {
-            // Merge with localStorage data if available
-            const localData = savedFormData ? JSON.parse(savedFormData) : {};
-            const mergedData = {
-              ...supabaseData,
-              ...localData,
-              investorId: savedInvestorId
-            };
-            setFormData(mergedData);
-            setCurrentScreen('dashboard');
-            return;
-          }
-        } catch (error) {
-          console.error('Error loading from Supabase:', error);
-        }
-      }
-
-      // Fallback to localStorage
-      if (isFirstTime || !savedFormData) {
-        setCurrentScreen('form');
-      } else {
+      if (savedFormData) {
         try {
           const parsedData = JSON.parse(savedFormData);
           setFormData(parsedData);
-          setCurrentScreen('dashboard');
         } catch (error) {
           console.error('Error parsing saved form data:', error);
-          setCurrentScreen('form');
         }
       }
-    };
-
-    loadData();
+    } else {
+      setCurrentScreen('login');
+    }
   }, []);
 
   const handleLogin = () => {
     localStorage.setItem('portfolio_ceo_logged_in', 'true');
-
-    // Check if user has completed the form before
+    setCurrentScreen('dashboard');
+    // Load data if available
     const savedFormData = localStorage.getItem('portfolio_ceo_form_data');
-    const isFirstTime = localStorage.getItem('portfolio_ceo_first_time') !== 'false';
-
-    if (isFirstTime || !savedFormData) {
-      setCurrentScreen('form');
-    } else {
-      // Load saved data and go to dashboard
+    if (savedFormData) {
       try {
         const parsedData = JSON.parse(savedFormData);
         setFormData(parsedData);
-        setCurrentScreen('dashboard');
       } catch (error) {
         console.error('Error parsing saved form data:', error);
-        setCurrentScreen('form'); // If parsing fails, show form
       }
     }
   };
@@ -116,7 +77,6 @@ function App() {
         setFormData(data);
         setCurrentScreen('dashboard');
         localStorage.setItem('portfolio_ceo_form_data', JSON.stringify(data));
-        localStorage.setItem('portfolio_ceo_first_time', 'false');
         return;
       }
 
@@ -164,7 +124,6 @@ function App() {
         // Also save to localStorage as backup
         localStorage.setItem('portfolio_ceo_form_data', JSON.stringify(dataWithSummary));
         localStorage.setItem('portfolio_ceo_investor_id', investorId);
-        localStorage.setItem('portfolio_ceo_first_time', 'false');
       } else {
         console.error('Error generating AI summary');
         // Still proceed to dashboard even if AI fails
@@ -173,7 +132,6 @@ function App() {
         setCurrentScreen('dashboard');
         localStorage.setItem('portfolio_ceo_form_data', JSON.stringify(dataWithId));
         localStorage.setItem('portfolio_ceo_investor_id', investorId);
-        localStorage.setItem('portfolio_ceo_first_time', 'false');
       }
     } catch (error) {
       console.error('Error in form submission:', error);
@@ -181,17 +139,18 @@ function App() {
       setFormData(data);
       setCurrentScreen('dashboard');
       localStorage.setItem('portfolio_ceo_form_data', JSON.stringify(data));
-      localStorage.setItem('portfolio_ceo_first_time', 'false');
     }
   };
 
   switch (currentScreen) {
     case 'login':
       return <LoginScreen onLogin={handleLogin} />;
-    case 'form':
-      return <PropertyInvestmentForm onSubmit={handleFormSubmit} />;
     case 'dashboard':
-      return <Dashboard formData={formData} />;
+      if (!formData) {
+        return <PropertyInvestmentForm onSubmit={handleFormSubmit} />;
+      } else {
+        return <Dashboard formData={formData} />;
+      }
     default:
       return <LoginScreen onLogin={handleLogin} />;
   }
