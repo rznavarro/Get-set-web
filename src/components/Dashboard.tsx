@@ -95,7 +95,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-gray-600">Loading dashboard...</div>
+        <div className="text-black">Loading dashboard...</div>
       </div>
     );
   }
@@ -103,7 +103,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   if (!data) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-gray-600">No analysis data available</div>
+        <div className="text-black">No analysis data available</div>
       </div>
     );
   }
@@ -122,13 +122,13 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
             <div className="flex space-x-2">
               <button
                 onClick={onEditMetrics}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
               >
                 Editar Métricas
               </button>
               <button
                 onClick={onLogout}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
               >
                 Cerrar Sesión
               </button>
@@ -141,24 +141,24 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
       <main className="px-8 py-8">
         {/* Metrics Summary */}
         <div className="mb-8">
-          <div className="bg-green-50 border border-green-200 p-6 rounded-2xl">
-            <h2 className="text-xl font-semibold mb-4 text-green-800">Tus Métricas Actuales</h2>
+          <div className="bg-white border border-gray-200 p-6 rounded-2xl">
+            <h2 className="text-xl font-semibold mb-4 text-black">Tus Métricas Actuales</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{metrics.leads}</div>
-                <div className="text-sm text-gray-600">Leads</div>
+                <div className="text-2xl font-bold text-black">{metrics.leads}</div>
+                <div className="text-sm text-black">Leads</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{metrics.visitas_agendadas}</div>
-                <div className="text-sm text-gray-600">Visitas Agendadas</div>
+                <div className="text-2xl font-bold text-black">{metrics.visitas_agendadas}</div>
+                <div className="text-sm text-black">Visitas Agendadas</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{metrics.visitas_casa}</div>
-                <div className="text-sm text-gray-600">Visitas Casa</div>
+                <div className="text-2xl font-bold text-black">{metrics.visitas_casa}</div>
+                <div className="text-sm text-black">Visitas Casa</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{metrics.ventas}</div>
-                <div className="text-sm text-gray-600">Ventas</div>
+                <div className="text-2xl font-bold text-black">{metrics.ventas}</div>
+                <div className="text-sm text-black">Ventas</div>
               </div>
             </div>
           </div>
@@ -218,14 +218,14 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
             className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
               generatingSummary
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'
+                : 'bg-black hover:bg-gray-800 hover:shadow-lg'
             }`}
           >
             {generatingSummary ? 'Generando...' : 'Generar Executive Summary'}
           </button>
           <button
             onClick={onNavigateToPlanes}
-            className="px-6 py-3 rounded-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 hover:shadow-lg transition-all"
+            className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
           >
             Ver Planes
           </button>
@@ -234,9 +234,9 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         {/* Executive Summary Response */}
         {executiveSummaryResponse && (
           <div className="mb-8">
-            <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-blue-800">Executive Summary</h2>
-              <div className="text-gray-700 whitespace-pre-wrap">{executiveSummaryResponse}</div>
+            <div className="bg-white border border-gray-200 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-black">Executive Summary</h2>
+              <div className="text-black whitespace-pre-wrap">{executiveSummaryResponse}</div>
             </div>
           </div>
         )}
