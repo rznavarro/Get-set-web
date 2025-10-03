@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
 
 interface LoginCodeScreenProps {
   onLoginSuccess: (code: string) => void;
@@ -23,19 +22,13 @@ export function LoginCodeScreen({ onLoginSuccess, onBack }: LoginCodeScreenProps
     setIsLoading(true);
 
     try {
-      // Check if code exists in database
-      const { data, error: dbError } = await supabase
-        .from('users_codes')
-        .select('code')
-        .eq('code', code.toUpperCase())
-        .single();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (dbError) {
-        if (dbError.code === 'PGRST116') { // No rows returned
-          setError('Código no encontrado. Verifica que esté correcto.');
-        } else {
-          throw dbError;
-        }
+      // Check if code exists in localStorage
+      const existingCodes = JSON.parse(localStorage.getItem('user_codes') || '[]');
+      if (!existingCodes.includes(code.toUpperCase())) {
+        setError('Código no encontrado. Verifica que esté correcto.');
         return;
       }
 

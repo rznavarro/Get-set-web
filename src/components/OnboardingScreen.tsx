@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
 
 interface OnboardingScreenProps {
   userCode: string;
@@ -41,20 +40,8 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
     setIsLoading(true);
 
     try {
-      // Insert metrics into user_metrics table
-      const { error: insertError } = await supabase
-        .from('user_metrics')
-        .insert([{
-          user_code: userCode,
-          leads: metrics.leads ? parseInt(metrics.leads) : null,
-          visitas_agendadas: metrics.visitas_agendadas ? parseInt(metrics.visitas_agendadas) : null,
-          visitas_casa: metrics.visitas_casa ? parseInt(metrics.visitas_casa) : null,
-          ventas: metrics.ventas ? parseInt(metrics.ventas) : null
-        }]);
-
-      if (insertError) {
-        throw insertError;
-      }
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Save metrics to localStorage for quick access
       localStorage.setItem('user_metrics', JSON.stringify(metrics));

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
 
 interface CreateAccountScreenProps {
   onAccountCreated: (code: string) => void;
@@ -38,30 +37,19 @@ export function CreateAccountScreen({ onAccountCreated, onBack }: CreateAccountS
     setIsLoading(true);
 
     try {
-      // Check if code already exists
-      const { data: existingCode, error: checkError } = await supabase
-        .from('users_codes')
-        .select('code')
-        .eq('code', code)
-        .single();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
-        throw checkError;
-      }
-
-      if (existingCode) {
+      // Check if code already exists in localStorage
+      const existingCodes = JSON.parse(localStorage.getItem('user_codes') || '[]');
+      if (existingCodes.includes(code)) {
         setError('Este código ya está en uso. Por favor elige otro.');
         return;
       }
 
-      // Insert new code
-      const { error: insertError } = await supabase
-        .from('users_codes')
-        .insert([{ code }]);
-
-      if (insertError) {
-        throw insertError;
-      }
+      // Add new code to localStorage
+      existingCodes.push(code);
+      localStorage.setItem('user_codes', JSON.stringify(existingCodes));
 
       // Save to localStorage and proceed
       localStorage.setItem('user_code', code);

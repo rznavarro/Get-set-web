@@ -6,45 +6,29 @@ import { CreateAccountScreen } from './components/CreateAccountScreen';
 import { LoginCodeScreen } from './components/LoginCodeScreen';
 import { OnboardingScreen } from './components/OnboardingScreen';
 
-type AppScreen = 'welcome' | 'createAccount' | 'loginCode' | 'onboarding' | 'dashboard' | 'planes';
+type AppScreen = 'welcome' | 'onboarding' | 'dashboard' | 'planes';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('welcome');
-  const [userCode, setUserCode] = useState<string>('');
+  const [userCode, setUserCode] = useState<string>('VORTEXIA');
   const [dashboardData, setDashboardData] = useState<any>(null);
 
   // Check initial state on app start
   useEffect(() => {
-    const savedCode = localStorage.getItem('user_code');
+    const accessGranted = localStorage.getItem('access_granted') === 'true';
     const onboardingCompleted = localStorage.getItem('onboarding_completed') === 'true';
 
-    if (savedCode && onboardingCompleted) {
-      setUserCode(savedCode);
+    if (accessGranted && onboardingCompleted) {
       setCurrentScreen('dashboard');
-    } else if (savedCode) {
-      setUserCode(savedCode);
+    } else if (accessGranted) {
       setCurrentScreen('onboarding');
     } else {
       setCurrentScreen('welcome');
     }
   }, []);
 
-  const handleCreateAccount = () => setCurrentScreen('createAccount');
-  const handleLogin = () => setCurrentScreen('loginCode');
-
-  const handleAccountCreated = (code: string) => {
-    setUserCode(code);
+  const handleAccessGranted = () => {
     setCurrentScreen('onboarding');
-  };
-
-  const handleCodeLogin = (code: string) => {
-    setUserCode(code);
-    const onboardingCompleted = localStorage.getItem('onboarding_completed') === 'true';
-    if (onboardingCompleted) {
-      setCurrentScreen('dashboard');
-    } else {
-      setCurrentScreen('onboarding');
-    }
   };
 
   const handleOnboardingComplete = () => {
@@ -62,10 +46,9 @@ function App() {
   const handleDataUpdate = (data: any) => setDashboardData(data);
 
   const handleLogout = () => {
-    localStorage.removeItem('user_code');
+    localStorage.removeItem('access_granted');
     localStorage.removeItem('onboarding_completed');
     localStorage.removeItem('user_metrics');
-    setUserCode('');
     setCurrentScreen('welcome');
   };
 
@@ -75,11 +58,7 @@ function App() {
 
   switch (currentScreen) {
     case 'welcome':
-      return <WelcomeScreen onCreateAccount={handleCreateAccount} onLogin={handleLogin} />;
-    case 'createAccount':
-      return <CreateAccountScreen onAccountCreated={handleAccountCreated} onBack={() => setCurrentScreen('welcome')} />;
-    case 'loginCode':
-      return <LoginCodeScreen onLoginSuccess={handleCodeLogin} onBack={() => setCurrentScreen('welcome')} />;
+      return <WelcomeScreen onAccessGranted={handleAccessGranted} />;
     case 'onboarding':
       return <OnboardingScreen userCode={userCode} onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />;
     case 'dashboard':
@@ -87,7 +66,7 @@ function App() {
     case 'planes':
       return <Planes onNavigateToDashboard={navigateToDashboard} dashboardData={dashboardData} userName={userCode} />;
     default:
-      return <WelcomeScreen onCreateAccount={handleCreateAccount} onLogin={handleLogin} />;
+      return <WelcomeScreen onAccessGranted={handleAccessGranted} />;
   }
 }
 
