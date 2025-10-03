@@ -182,46 +182,71 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
 
   const downloadAsPDF = (plan: Plan) => {
     const doc = new jsPDF();
+    const pageHeight = doc.internal.pageSize.height;
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = 20;
+    const maxWidth = pageWidth - 2 * margin;
+    let yPosition = margin + 20;
 
     // Set up fonts - using Helvetica as base, trying to simulate styles
     doc.setFont('helvetica', 'bold');
 
     // Title - simulating Dancing Script style with larger bold font
     doc.setFontSize(24);
-    doc.text(`Plan: ${plan.title}`, 10, 20);
+    const titleLines = doc.splitTextToSize(`Plan: ${plan.title}`, maxWidth);
+    doc.text(titleLines, margin, yPosition);
+    yPosition += titleLines.length * 15 + 10;
 
     // Date
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
-    doc.text(`Fecha: ${formatDate(plan.createdAt)}`, 10, 35);
+    doc.text(`Fecha: ${formatDate(plan.createdAt)}`, margin, yPosition);
+    yPosition += 20;
 
-    let yPosition = 50;
+    // Function to add text with page breaks
+    const addTextWithPageBreaks = (text: string, fontSize: number = 12, fontStyle: 'normal' | 'bold' = 'normal') => {
+      doc.setFont('helvetica', fontStyle);
+      doc.setFontSize(fontSize);
+
+      const lines = doc.splitTextToSize(text, maxWidth);
+      const lineHeight = fontSize * 1.5; // 1.5 line spacing
+
+      lines.forEach((line: string) => {
+        if (yPosition + lineHeight > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin + 20;
+        }
+        doc.text(line, margin, yPosition);
+        yPosition += lineHeight;
+      });
+    };
 
     if (typeof plan.content === 'string') {
-      // Split text into lines that fit the page width
-      const lines = doc.splitTextToSize(plan.content, 180);
+      // Process content to identify sections (assuming sections are separated by double line breaks or specific markers)
+      const sections = plan.content.split(/\n\s*\n/).filter(section => section.trim());
 
-      // Body text - Arial equivalent (Helvetica) 12pt with 1.5 line spacing
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(12);
+      sections.forEach((section, index) => {
+        // Check if this looks like a heading (shorter lines, all caps, etc.)
+        const isHeading = section.length < 100 && (section === section.toUpperCase() || section.includes(':'));
 
-      // Add lines with proper line spacing (1.5 = 18pt between lines)
-      lines.forEach((line: string) => {
-        doc.text(line, 10, yPosition);
-        yPosition += 9; // 12pt * 1.5 = 18pt, but adjusted for better fit
+        if (isHeading) {
+          // Add some space before heading
+          yPosition += 10;
+          if (yPosition > pageHeight - margin - 30) {
+            doc.addPage();
+            yPosition = margin + 20;
+          }
+          addTextWithPageBreaks(section, 18, 'bold');
+          yPosition += 5; // Extra space after heading
+        } else {
+          addTextWithPageBreaks(section, 12, 'normal');
+          yPosition += 10; // Space between sections
+        }
       });
     } else {
       // For JSON content, stringify it
       const contentText = JSON.stringify(plan.content, null, 2);
-      const lines = doc.splitTextToSize(contentText, 180);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(12);
-
-      lines.forEach((line: string) => {
-        doc.text(line, 10, yPosition);
-        yPosition += 9;
-      });
+      addTextWithPageBreaks(contentText, 10, 'normal');
     }
 
     doc.save(`${plan.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`);
