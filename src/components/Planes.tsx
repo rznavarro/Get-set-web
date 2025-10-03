@@ -47,13 +47,13 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result = await response.text();
 
-      // Save plan to localStorage
+      // Save response as plan
       const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
       const newPlan = {
         id: `plan-${Date.now()}`,
-        title: result.title || `Plan ${existingPlans.length + 1}`,
+        title: `Plan ${existingPlans.length + 1}`,
         content: result,
         createdAt: new Date().toISOString()
       };
@@ -63,8 +63,6 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
       // Update local state
       setPlans(existingPlans);
 
-      alert('Plan creado exitosamente');
-
     } catch (error) {
       console.error('Error creating plan:', error);
       // Save error response as plan
@@ -72,7 +70,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
       const errorPlan = {
         id: `plan-error-${Date.now()}`,
         title: `Error en Plan ${existingPlans.length + 1}`,
-        content: { error: 'Error al crear el plan', details: (error as Error).message },
+        content: `Error al crear el plan: ${(error as Error).message}`,
         createdAt: new Date().toISOString()
       };
       existingPlans.push(errorPlan);
