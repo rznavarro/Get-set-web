@@ -317,6 +317,19 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
           </div>
         </div>
 
+        {/* Portfolio ROI Highlight */}
+        {financialMetrics && (
+          <div className="mb-8">
+            <div className="bg-gradient-to-r from-black to-gray-800 text-white p-6 rounded-2xl">
+              <div className="text-center">
+                <div className="text-sm uppercase tracking-wide font-dancing-script mb-2">Portfolio ROI</div>
+                <div className="text-4xl font-bold">{financialMetrics.portfolio_roi}</div>
+                <div className="text-sm opacity-80 mt-1">Annual return on investment</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Metrics Grid */}
         {financialMetrics && (
           <div className="grid grid-cols-3 gap-6 mb-12">
