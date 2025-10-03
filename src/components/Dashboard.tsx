@@ -58,7 +58,7 @@ export function Dashboard({ userName }: DashboardProps) {
 
     setGeneratingSummary(true);
     try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export function Dashboard({ userName }: DashboardProps) {
 
     setCreatingPlan(true);
     try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -4,11 +4,9 @@ import { AnalysisData, CriticalAction, QuickAction, sendPlanToWebhook } from '..
 
 interface OpportunityListProps {
   data: AnalysisData;
-  onRegenerateSummary?: () => void;
-  regenerating?: boolean;
 }
 
-export function OpportunityList({ data, onRegenerateSummary, regenerating }: OpportunityListProps) {
+export function OpportunityList({ data }: OpportunityListProps) {
   // Load saved actions from localStorage or use default data
   const loadSavedActions = () => {
     const savedCritical = localStorage.getItem('portfolio_ceo_critical_actions');
@@ -52,7 +50,6 @@ export function OpportunityList({ data, onRegenerateSummary, regenerating }: Opp
   const [newQuickAction, setNewQuickAction] = useState('');
   const [showNewCritical, setShowNewCritical] = useState(false);
   const [showNewQuick, setShowNewQuick] = useState(false);
-  const [sendingPlan, setSendingPlan] = useState(false);
 
   const addCriticalAction = () => {
     if (newCriticalAction.action.trim()) {
@@ -100,60 +97,6 @@ export function OpportunityList({ data, onRegenerateSummary, regenerating }: Opp
     setEditingQuick(null);
   };
 
-  const handleCreatePlan = async () => {
-    setSendingPlan(true);
-    try {
-      const planData = {
-        // All dashboard data
-        executive_summary: data.analysis.executive_summary,
-        metrics: {
-          portfolio_value: data.metrics.portfolio_value,
-          current_noi: data.metrics.current_noi,
-          noi_opportunity: data.metrics.noi_opportunity,
-          portfolio_roi: data.metrics.portfolio_roi,
-          vacancy_cost: data.metrics.vacancy_cost,
-          turnover_risk: data.metrics.turnover_risk,
-          capex_due: data.metrics.capex_due
-        },
-        // Original data from analysis
-        original_critical_actions: data.analysis.critical_actions,
-        original_quick_actions: data.next_30_days,
-        // Modified/edited data
-        edited_critical_actions: criticalActions.map(action => ({
-          action: action.action,
-          impact: action.impact,
-          urgency: action.urgency,
-          details: action.details
-        })),
-        edited_quick_actions: quickActions.map(action => action.action),
-        // Timestamp for the plan creation
-        timestamp: new Date().toISOString()
-      };
-
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(planData),
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        alert('Plan enviado exitosamente al sistema de análisis');
-        console.log('Webhook response:', responseData);
-      } else {
-        const errorText = await response.text();
-        console.error('Webhook error:', errorText);
-        alert('Error al enviar el plan. Intenta nuevamente.');
-      }
-    } catch (error) {
-      console.error('Error sending plan:', error);
-      alert('Error al enviar el plan. Intenta nuevamente.');
-    } finally {
-      setSendingPlan(false);
-    }
-  };
 
   return (
     <div className="space-y-8">
@@ -384,48 +327,6 @@ export function OpportunityList({ data, onRegenerateSummary, regenerating }: Opp
         </div>
       </div>
 
-      {/* Buttons */}
-      <div className="flex justify-center space-x-4">
-        <button
-          onClick={onRegenerateSummary}
-          disabled={regenerating}
-          className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold text-base transition-all ${
-            regenerating
-              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg'
-          }`}
-        >
-          {regenerating ? (
-            <>
-              <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-              <span>Generando...</span>
-            </>
-          ) : (
-            <span>Generar Executive Summary</span>
-          )}
-        </button>
-        <button
-          onClick={handleCreatePlan}
-          disabled={sendingPlan}
-          className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold text-base transition-all ${
-            sendingPlan
-              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-              : 'bg-navy text-white hover:bg-gray-600 hover:shadow-lg'
-          }`}
-        >
-          {sendingPlan ? (
-            <>
-              <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-              <span>Enviando Plan...</span>
-            </>
-          ) : (
-            <>
-              <AlertCircle className="w-4 h-4" />
-              <span className="font-dancing-script">CREAR PLAN</span>
-            </>
-          )}
-        </button>
-      </div>
     </div>
   );
 }
