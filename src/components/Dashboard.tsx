@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MetricCard } from './MetricCard';
 import { OpportunityList } from './OpportunityList';
 import { MetricEditForm } from './MetricEditForm';
+import { SalesMetricsEditForm } from './SalesMetricsEditForm';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 
 interface FinancialMetrics {
@@ -40,6 +41,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [showMetricEdit, setShowMetricEdit] = useState(false);
+  const [showSalesEdit, setShowSalesEdit] = useState(false);
   const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
 
 
@@ -168,8 +170,18 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     setShowMetricEdit(false);
   };
 
+  const handleSaveSalesMetrics = (newMetrics: { leads: number; visitas_agendadas: number; visitas_casa: number; ventas: number }) => {
+    setMetrics(newMetrics);
+    localStorage.setItem('user_metrics', JSON.stringify(newMetrics));
+    setShowSalesEdit(false);
+  };
+
   const handleCancelMetricEdit = () => {
     setShowMetricEdit(false);
+  };
+
+  const handleCancelSalesEdit = () => {
+    setShowSalesEdit(false);
   };
 
   const handleNavigateToPlanes = async () => {
@@ -289,7 +301,15 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         {/* Metrics Summary */}
         <div className="mb-8">
           <div className="bg-white border border-gray-200 p-6 rounded-2xl">
-            <h2 className="text-xl font-semibold mb-4 text-black">Tus Métricas Actuales</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-black">Tus Métricas Actuales</h2>
+              <button
+                onClick={() => setShowSalesEdit(true)}
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+              >
+                Editar
+              </button>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-black">{metrics.leads}</div>
@@ -405,6 +425,14 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
           currentMetrics={financialMetrics}
           onSave={handleSaveMetrics}
           onCancel={handleCancelMetricEdit}
+        />
+      )}
+
+      {showSalesEdit && (
+        <SalesMetricsEditForm
+          currentMetrics={metrics}
+          onSave={handleSaveSalesMetrics}
+          onCancel={handleCancelSalesEdit}
         />
       )}
     </div>
