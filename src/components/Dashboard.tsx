@@ -259,25 +259,19 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-black font-dancing-script">CEO Dashboard</span>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">CÓDIGO</div>
-              <div className="text-lg font-bold text-black">{userCode}</div>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={onEditMetrics}
-                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
-              >
-                Editar Métricas
-              </button>
-              <button
-                onClick={onLogout}
-                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
-              >
-                Cerrar Sesión
-              </button>
-            </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={onEditMetrics}
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+            >
+              Editar Métricas
+            </button>
+            <button
+              onClick={onLogout}
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+            >
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       </header>
