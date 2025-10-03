@@ -119,7 +119,8 @@ export function Dashboard({ formData }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
-  const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
+  const [generatedSummaries, setGeneratedSummaries] = useState<string[]>([]);
+  const [showAllSummaries, setShowAllSummaries] = useState(false);
 
   const handleRegenerateSummary = async () => {
     if (!formData) return;
@@ -146,26 +147,28 @@ export function Dashboard({ formData }: DashboardProps) {
       const result = await response.json();
       const summary = result.executiveSummary || result.summary || 'Resumen generado por AI';
 
-      setGeneratedSummary(summary);
+      setGeneratedSummaries(prev => [...prev, summary]);
 
     } catch (error) {
       console.error('Error generating executive summary:', error);
-      setGeneratedSummary('Error al generar el resumen ejecutivo.');
+      setGeneratedSummaries(prev => [...prev, 'Error al generar el resumen ejecutivo.']);
     } finally {
       setRegenerating(false);
     }
   };
 
   const downloadAsPDF = () => {
-    if (!generatedSummary) return;
+    const latestSummary = generatedSummaries[generatedSummaries.length - 1];
+    if (!latestSummary) return;
     const doc = new jsPDF();
-    doc.text(generatedSummary, 10, 10);
+    doc.text(latestSummary, 10, 10);
     doc.save('resumen_ejecutivo.pdf');
   };
 
   const downloadAsWord = () => {
-    if (!generatedSummary) return;
-    const blob = new Blob([generatedSummary], { type: 'application/msword' });
+    const latestSummary = generatedSummaries[generatedSummaries.length - 1];
+    if (!latestSummary) return;
+    const blob = new Blob([latestSummary], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -235,20 +238,20 @@ export function Dashboard({ formData }: DashboardProps) {
             <span className="text-2xl font-bold text-navy font-dancing-script">PORTFOLIO CEO</span>
             <div className="flex space-x-4">
               {/* Resumenes ejecutivos section */}
-              <div className="bg-white border border-gray-200 rounded-lg p-3 min-w-[200px]">
-                <div className="text-sm font-semibold text-navy font-dancing-script mb-2">Resumenes ejecutivos</div>
-                {generatedSummary ? (
+              <div className="bg-white border border-gray-200 rounded-lg p-3 min-w-[200px] cursor-pointer" onClick={() => setShowAllSummaries(!showAllSummaries)}>
+                <div className="text-sm font-semibold text-navy font-dancing-script mb-2">Resumenes ejecutivos ({generatedSummaries.length})</div>
+                {generatedSummaries.length > 0 ? (
                   <div className="space-y-2">
-                    <p className="text-xs text-gray-700 line-clamp-3">{generatedSummary}</p>
+                    <p className="text-xs text-gray-700 line-clamp-3">{generatedSummaries[generatedSummaries.length - 1]}</p>
                     <div className="flex space-x-1">
                       <button
-                        onClick={downloadAsPDF}
+                        onClick={(e) => { e.stopPropagation(); downloadAsPDF(); }}
                         className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-medium"
                       >
                         PDF
                       </button>
                       <button
-                        onClick={downloadAsWord}
+                        onClick={(e) => { e.stopPropagation(); downloadAsWord(); }}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium"
                       >
                         Word
@@ -280,6 +283,47 @@ export function Dashboard({ formData }: DashboardProps) {
             <div className="text-4xl font-bold text-navy">{data.metrics.portfolio_value}</div>
           </div>
         </div>
+        {showAllSummaries && generatedSummaries.length > 0 && (
+          <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+            <h3 className="text-lg font-semibold text-navy font-dancing-script mb-4">Todos los Resumenes Ejecutivos</h3>
+            <div className="space-y-4">
+              {generatedSummaries.map((summary, index) => (
+                <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-sm font-medium text-navy">Resumen #{index + 1}</h4>
+                    <div className="flex space-x-1">
+                      <button
+                        onClick={() => {
+                          const doc = new jsPDF();
+                          doc.text(summary, 10, 10);
+                          doc.save(`resumen_ejecutivo_${index + 1}.pdf`);
+                        }}
+                        className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-medium"
+                      >
+                        PDF
+                      </button>
+                      <button
+                        onClick={() => {
+                          const blob = new Blob([summary], { type: 'application/msword' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `resumen_ejecutivo_${index + 1}.doc`;
+                          a.click();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium"
+                      >
+                        Word
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700">{summary}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
