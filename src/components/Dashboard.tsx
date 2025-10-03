@@ -21,7 +21,6 @@ export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
   const [loading, setLoading] = useState(true);
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
-  const [creatingPlan, setCreatingPlan] = useState(false);
 
 
   useEffect(() => {
@@ -86,50 +85,6 @@ export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
     }
   };
 
-  const handleCreatePlan = async () => {
-    if (!data) return;
-
-    setCreatingPlan(true);
-    try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'create_plan',
-          timestamp: new Date().toISOString(),
-          userName: userName,
-          dashboardData: data
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      // Save plan to localStorage
-      const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
-      const newPlan = {
-        id: `plan-${Date.now()}`,
-        title: result.title || `Plan ${existingPlans.length + 1}`,
-        content: result,
-        createdAt: new Date().toISOString()
-      };
-      existingPlans.push(newPlan);
-      localStorage.setItem('portfolio_ceo_plans', JSON.stringify(existingPlans));
-
-      alert('Plan creado exitosamente');
-
-    } catch (error) {
-      console.error('Error creating plan:', error);
-      alert('Error al crear el plan. Intenta nuevamente.');
-    } finally {
-      setCreatingPlan(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -228,17 +183,6 @@ export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
             }`}
           >
             {generatingSummary ? 'Generando...' : 'Generar Executive Summary'}
-          </button>
-          <button
-            onClick={handleCreatePlan}
-            disabled={creatingPlan}
-            className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
-              creatingPlan
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-green-600 hover:bg-green-700 hover:shadow-lg'
-            }`}
-          >
-            {creatingPlan ? 'Creando...' : 'CREAR PLAN'}
           </button>
           <button
             onClick={onNavigateToPlanes}
