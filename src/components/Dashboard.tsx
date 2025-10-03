@@ -18,6 +18,10 @@ function getExecutiveSummary(userName: string | null, baseSummary: string): stri
 export function Dashboard({ userName }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
+  const [planResponse, setPlanResponse] = useState<any>(null);
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+  const [creatingPlan, setCreatingPlan] = useState(false);
 
 
   useEffect(() => {
@@ -48,6 +52,72 @@ export function Dashboard({ userName }: DashboardProps) {
 
     fetchData();
   }, [userName]);
+
+  const handleGenerateExecutiveSummary = async () => {
+    if (!data) return;
+
+    setGeneratingSummary(true);
+    try {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'generate_executive_summary',
+          timestamp: new Date().toISOString(),
+          userName: userName,
+          dashboardData: data
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.text();
+      setExecutiveSummaryResponse(result);
+
+    } catch (error) {
+      console.error('Error generating executive summary:', error);
+      setExecutiveSummaryResponse('Error al generar el resumen ejecutivo.');
+    } finally {
+      setGeneratingSummary(false);
+    }
+  };
+
+  const handleCreatePlan = async () => {
+    if (!data) return;
+
+    setCreatingPlan(true);
+    try {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'create_plan',
+          timestamp: new Date().toISOString(),
+          userName: userName,
+          dashboardData: data
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setPlanResponse(result);
+
+    } catch (error) {
+      console.error('Error creating plan:', error);
+      setPlanResponse({ error: 'Error al crear el plan.' });
+    } finally {
+      setCreatingPlan(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -126,6 +196,62 @@ export function Dashboard({ userName }: DashboardProps) {
           />
         </div>
 
+        {/* Action Buttons */}
+        <div className="mb-8 flex space-x-4">
+          <button
+            onClick={handleGenerateExecutiveSummary}
+            disabled={generatingSummary}
+            className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+              generatingSummary
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'
+            }`}
+          >
+            {generatingSummary ? 'Generando...' : 'Generar Executive Summary'}
+          </button>
+          <button
+            onClick={handleCreatePlan}
+            disabled={creatingPlan}
+            className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+              creatingPlan
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-600 hover:bg-green-700 hover:shadow-lg'
+            }`}
+          >
+            {creatingPlan ? 'Creando...' : 'CREAR PLAN'}
+          </button>
+        </div>
+
+        {/* Executive Summary Response */}
+        {executiveSummaryResponse && (
+          <div className="mb-8">
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-blue-800">Executive Summary</h2>
+              <div className="text-gray-700 whitespace-pre-wrap">{executiveSummaryResponse}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Plan Response */}
+        {planResponse && (
+          <div className="mb-8">
+            <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-green-800">Plan Creado</h2>
+              {typeof planResponse === 'object' ? (
+                <div className="space-y-2">
+                  {Object.entries(planResponse).map(([key, value]) => (
+                    <div key={key} className="flex">
+                      <span className="font-medium text-green-700 w-1/3">{key}:</span>
+                      <span className="text-gray-700">{JSON.stringify(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-gray-700">{planResponse}</div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Opportunities and Actions */}
         <OpportunityList data={data} />
