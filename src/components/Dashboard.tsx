@@ -87,18 +87,50 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
 
     setGeneratingSummary(true);
     try {
+      // Load current dynamic data
+      const savedMetrics = localStorage.getItem('user_metrics');
+      const userMetrics = savedMetrics ? JSON.parse(savedMetrics) : metrics;
+
+      const savedCriticalActions = localStorage.getItem('portfolio_ceo_critical_actions');
+      const criticalActions = savedCriticalActions ? JSON.parse(savedCriticalActions) : data.analysis.critical_actions.map((action, index) => ({
+        id: `critical-${index}`,
+        ...action
+      }));
+
+      const savedQuickActions = localStorage.getItem('portfolio_ceo_quick_actions');
+      const quickActions = savedQuickActions ? JSON.parse(savedQuickActions) : data.next_30_days.map((action, index) => ({
+        id: `quick-${index}`,
+        action
+      }));
+
+      const currentData = {
+        action: 'generate_executive_summary',
+        timestamp: new Date().toISOString(),
+        userCode: userCode,
+        executiveSummary: data.analysis.executive_summary,
+        financialMetrics: financialMetrics,
+        userMetrics: userMetrics,
+        topOpportunities: criticalActions,
+        quickActions: quickActions,
+        // Include all individual metrics for clarity
+        current_noi: financialMetrics?.current_noi,
+        noi_opportunity: financialMetrics?.noi_opportunity,
+        portfolio_roi: financialMetrics?.portfolio_roi,
+        vacancy_cost: financialMetrics?.vacancy_cost,
+        turnover_risk: financialMetrics?.turnover_risk,
+        capex_due: financialMetrics?.capex_due,
+        leads: userMetrics.leads,
+        visitas_agendadas: userMetrics.visitas_agendadas,
+        visitas_casa: userMetrics.visitas_casa,
+        ventas: userMetrics.ventas
+      };
+
       const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'generate_executive_summary',
-          timestamp: new Date().toISOString(),
-          userCode: userCode,
-          dashboardData: data,
-          financialMetrics: financialMetrics
-        }),
+        body: JSON.stringify(currentData),
       });
 
       if (!response.ok) {
@@ -129,6 +161,59 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     setShowMetricEdit(false);
   };
 
+  const handleNavigateToPlanes = async () => {
+    // Load current dynamic data
+    const savedMetrics = localStorage.getItem('user_metrics');
+    const userMetrics = savedMetrics ? JSON.parse(savedMetrics) : metrics;
+
+    const savedCriticalActions = localStorage.getItem('portfolio_ceo_critical_actions');
+    const criticalActions = savedCriticalActions ? JSON.parse(savedCriticalActions) : data?.analysis.critical_actions.map((action, index) => ({
+      id: `critical-${index}`,
+      ...action
+    })) || [];
+
+    const savedQuickActions = localStorage.getItem('portfolio_ceo_quick_actions');
+    const quickActions = savedQuickActions ? JSON.parse(savedQuickActions) : data?.next_30_days.map((action, index) => ({
+      id: `quick-${index}`,
+      action
+    })) || [];
+
+    const currentData = {
+      action: 'navigate_to_planes',
+      timestamp: new Date().toISOString(),
+      userCode: userCode,
+      executiveSummary: data?.analysis.executive_summary,
+      financialMetrics: financialMetrics,
+      userMetrics: userMetrics,
+      topOpportunities: criticalActions,
+      quickActions: quickActions,
+      // Include all individual metrics
+      current_noi: financialMetrics?.current_noi,
+      noi_opportunity: financialMetrics?.noi_opportunity,
+      portfolio_roi: financialMetrics?.portfolio_roi,
+      vacancy_cost: financialMetrics?.vacancy_cost,
+      turnover_risk: financialMetrics?.turnover_risk,
+      capex_due: financialMetrics?.capex_due,
+      leads: userMetrics.leads,
+      visitas_agendadas: userMetrics.visitas_agendadas,
+      visitas_casa: userMetrics.visitas_casa,
+      ventas: userMetrics.ventas
+    };
+
+    try {
+      await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentData),
+      });
+    } catch (error) {
+      console.error('Error sending data to CeoPremium3:', error);
+    }
+
+    onNavigateToPlanes();
+  };
 
   if (loading) {
     return (
@@ -269,7 +354,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
             </button>
           )}
           <button
-            onClick={onNavigateToPlanes}
+            onClick={handleNavigateToPlanes}
             className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
           >
             Ver Planes

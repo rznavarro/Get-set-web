@@ -61,28 +61,49 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
 
     setCreatingPlan(true);
     try {
+      // Load current dynamic data
+      const savedCriticalActions = localStorage.getItem('portfolio_ceo_critical_actions');
+      const criticalActions = savedCriticalActions ? JSON.parse(savedCriticalActions) : dashboardData.analysis.critical_actions.map((action, index) => ({
+        id: `critical-${index}`,
+        ...action
+      }));
+
+      const savedQuickActions = localStorage.getItem('portfolio_ceo_quick_actions');
+      const quickActions = savedQuickActions ? JSON.parse(savedQuickActions) : dashboardData.next_30_days.map((action, index) => ({
+        id: `quick-${index}`,
+        action
+      }));
+
+      const currentData = {
+        action: 'create_plan',
+        timestamp: new Date().toISOString(),
+        userName: userName,
+        userCode: 'VORTEXIA',
+        planFormData: formData,
+        executiveSummary: dashboardData.analysis.executive_summary,
+        financialMetrics: financialMetrics,
+        userMetrics: userMetrics,
+        topOpportunities: criticalActions,
+        quickActions: quickActions,
+        // Include all individual metrics
+        current_noi: financialMetrics?.current_noi,
+        noi_opportunity: financialMetrics?.noi_opportunity,
+        portfolio_roi: financialMetrics?.portfolio_roi,
+        vacancy_cost: financialMetrics?.vacancy_cost,
+        turnover_risk: financialMetrics?.turnover_risk,
+        capex_due: financialMetrics?.capex_due,
+        leads: userMetrics.leads,
+        visitas_agendadas: userMetrics.visitas_agendadas,
+        visitas_casa: userMetrics.visitas_casa,
+        ventas: userMetrics.ventas
+      };
+
       const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'create_plan',
-          timestamp: new Date().toISOString(),
-          userName: userName,
-          userCode: 'VORTEXIA',
-          dashboardData: dashboardData,
-          userMetrics: userMetrics,
-          financialMetrics: financialMetrics,
-          planFormData: formData,
-          completeDashboardInfo: {
-            executiveSummary: dashboardData?.analysis.executive_summary,
-            metrics: financialMetrics, // Use edited financial metrics instead of original
-            criticalActions: dashboardData?.analysis.critical_actions,
-            quickActions: dashboardData?.next_30_days,
-            userMetrics: userMetrics
-          }
-        }),
+        body: JSON.stringify(currentData),
       });
 
       if (!response.ok) {
