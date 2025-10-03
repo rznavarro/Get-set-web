@@ -5,6 +5,7 @@ import { AnalysisData, getLatestAnalysis } from '../lib/api';
 
 interface DashboardProps {
   userName: string | null;
+  onNavigateToPlanes: () => void;
 }
 
 // Function to get executive summary personalized with user name
@@ -15,11 +16,10 @@ function getExecutiveSummary(userName: string | null, baseSummary: string): stri
   return baseSummary;
 }
 
-export function Dashboard({ userName }: DashboardProps) {
+export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
-  const [planResponse, setPlanResponse] = useState<any>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [creatingPlan, setCreatingPlan] = useState(false);
 
@@ -109,11 +109,23 @@ export function Dashboard({ userName }: DashboardProps) {
       }
 
       const result = await response.json();
-      setPlanResponse(result);
+
+      // Save plan to localStorage
+      const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
+      const newPlan = {
+        id: `plan-${Date.now()}`,
+        title: result.title || `Plan ${existingPlans.length + 1}`,
+        content: result,
+        createdAt: new Date().toISOString()
+      };
+      existingPlans.push(newPlan);
+      localStorage.setItem('portfolio_ceo_plans', JSON.stringify(existingPlans));
+
+      alert('Plan creado exitosamente');
 
     } catch (error) {
       console.error('Error creating plan:', error);
-      setPlanResponse({ error: 'Error al crear el plan.' });
+      alert('Error al crear el plan. Intenta nuevamente.');
     } finally {
       setCreatingPlan(false);
     }
@@ -141,9 +153,17 @@ export function Dashboard({ userName }: DashboardProps) {
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-navy font-dancing-script">{userName || 'PORTFOLIO CEO'}</span>
-          <div className="text-right">
-            <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">TOTAL PORTFOLIO VALUE</div>
-            <div className="text-4xl font-bold text-navy">{data.metrics.portfolio_value}</div>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={onNavigateToPlanes}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              Ver Planes
+            </button>
+            <div className="text-right">
+              <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">TOTAL PORTFOLIO VALUE</div>
+              <div className="text-4xl font-bold text-navy">{data.metrics.portfolio_value}</div>
+            </div>
           </div>
         </div>
       </header>
@@ -232,26 +252,6 @@ export function Dashboard({ userName }: DashboardProps) {
           </div>
         )}
 
-        {/* Plan Response */}
-        {planResponse && (
-          <div className="mb-8">
-            <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-green-800">Plan Creado</h2>
-              {typeof planResponse === 'object' ? (
-                <div className="space-y-2">
-                  {Object.entries(planResponse).map(([key, value]) => (
-                    <div key={key} className="flex">
-                      <span className="font-medium text-green-700 w-1/3">{key}:</span>
-                      <span className="text-gray-700">{JSON.stringify(value)}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-gray-700">{planResponse}</div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Opportunities and Actions */}
         <OpportunityList data={data} />
