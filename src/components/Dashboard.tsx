@@ -355,7 +355,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         )}
 
         {/* Action Buttons */}
-        <div className="mb-8 flex space-x-4">
+        <div className="mb-8 flex space-x-4 justify-center">
           <button
             onClick={handleGenerateExecutiveSummary}
             disabled={generatingSummary || !financialMetrics}
