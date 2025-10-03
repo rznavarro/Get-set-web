@@ -320,12 +320,9 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         {/* Portfolio ROI Highlight */}
         {financialMetrics && (
           <div className="mb-8">
-            <div className="bg-gradient-to-r from-black to-gray-800 text-white p-6 rounded-2xl">
-              <div className="text-center">
-                <div className="text-sm uppercase tracking-wide font-dancing-script mb-2">Portfolio ROI</div>
-                <div className="text-4xl font-bold">{financialMetrics.portfolio_roi}</div>
-                <div className="text-sm opacity-80 mt-1">Annual return on investment</div>
-              </div>
+            <div className="bg-white border border-gray-200 p-6 rounded-lg">
+              <h1 className="text-xl font-semibold mb-2 font-dancing-script text-black">EXECUTIVE SUMMARY</h1>
+              <p className="text-lg text-black">Tu portfolio tiene 3 oportunidades inmediatas que pueden generar $156K adicionales este año.</p>
             </div>
           </div>
         )}
