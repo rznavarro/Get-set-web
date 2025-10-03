@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Lock, AlertCircle } from 'lucide-react';
+import { Lock, AlertCircle, User } from 'lucide-react';
 
 interface LoginScreenProps {
-  onLogin: () => void;
+  onLogin: (name: string) => void;
 }
 
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [accessCode, setAccessCode] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,12 +19,15 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (accessCode === 'PremiumCEO') {
-      // Set login status in localStorage
+    if (accessCode === 'PremiumCEO' && name.trim()) {
+      // Set login status and name in localStorage
       localStorage.setItem('portfolio_ceo_logged_in', 'true');
-      onLogin();
-    } else {
+      localStorage.setItem('portfolio_ceo_user_name', name.trim());
+      onLogin(name.trim());
+    } else if (accessCode !== 'PremiumCEO') {
       setError('Código de acceso incorrecto. Inténtalo nuevamente.');
+    } else {
+      setError('Por favor ingresa tu nombre.');
     }
 
     setIsLoading(false);
@@ -40,6 +44,27 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2 font-dancing-script">
+              Nombre
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-navy focus:border-navy focus:outline-none"
+                placeholder="Ingresa tu nombre"
+                required
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+
           <div>
             <label htmlFor="accessCode" className="block text-sm font-medium text-gray-700 mb-2 font-dancing-script">
               Código de Acceso
@@ -72,9 +97,9 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isLoading || !accessCode.trim()}
+            disabled={isLoading || !accessCode.trim() || !name.trim()}
             className={`w-full flex items-center justify-center py-3 px-4 rounded-lg font-semibold text-white transition-all ${
-              isLoading || !accessCode.trim()
+              isLoading || !accessCode.trim() || !name.trim()
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-navy hover:bg-gray-600 hover:shadow-lg'
             }`}
