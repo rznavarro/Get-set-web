@@ -30,7 +30,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName }: Plane
 
     setCreatingPlan(true);
     try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook/CeoPremium3', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
