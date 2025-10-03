@@ -4,9 +4,10 @@ import { OpportunityList } from './OpportunityList';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 
 interface DashboardProps {
-  userName: string | null;
+  userCode: string;
+  onLogout: () => void;
+  onEditMetrics: () => void;
   onNavigateToPlanes: () => void;
-  onDataUpdate: (data: any) => void;
 }
 
 // Function to get executive summary personalized with user name
@@ -17,9 +18,15 @@ function getExecutiveSummary(userName: string | null, baseSummary: string): stri
   return baseSummary;
 }
 
-export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: DashboardProps) {
+export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlanes }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [metrics, setMetrics] = useState({
+    leads: 0,
+    visitas_agendadas: 0,
+    visitas_casa: 0,
+    ventas: 0
+  });
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
 
@@ -34,16 +41,13 @@ export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: Dashbo
           return;
         }
 
-        // Personalize executive summary with user name
-        const personalizedData: AnalysisData = {
-          ...analysisData,
-          analysis: {
-            ...analysisData.analysis,
-            executive_summary: getExecutiveSummary(userName, analysisData.analysis.executive_summary)
-          }
-        };
-        setData(personalizedData);
-        onDataUpdate(personalizedData);
+        setData(analysisData);
+
+        // Load metrics from localStorage
+        const savedMetrics = localStorage.getItem('user_metrics');
+        if (savedMetrics) {
+          setMetrics(JSON.parse(savedMetrics));
+        }
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {
@@ -52,7 +56,7 @@ export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: Dashbo
     }
 
     fetchData();
-  }, [userName]);
+  }, []);
 
   const handleGenerateExecutiveSummary = async () => {
     if (!data) return;
@@ -67,7 +71,7 @@ export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: Dashbo
         body: JSON.stringify({
           action: 'generate_executive_summary',
           timestamp: new Date().toISOString(),
-          userName: userName,
+          userCode: userCode,
           dashboardData: data
         }),
       });
@@ -109,17 +113,25 @@ export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: Dashbo
       {/* Header */}
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-navy font-dancing-script">{userName || 'PORTFOLIO CEO'}</span>
+          <span className="text-2xl font-bold text-navy font-dancing-script">CEO Dashboard</span>
           <div className="flex items-center space-x-4">
-            <button
-              onClick={onNavigateToPlanes}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-            >
-              Ver Planes
-            </button>
             <div className="text-right">
-              <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">TOTAL PORTFOLIO VALUE</div>
-              <div className="text-4xl font-bold text-navy">{data.metrics.portfolio_value}</div>
+              <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">CÓDIGO</div>
+              <div className="text-lg font-bold text-navy">{userCode}</div>
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={onEditMetrics}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              >
+                Editar Métricas
+              </button>
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+              >
+                Cerrar Sesión
+              </button>
             </div>
           </div>
         </div>
@@ -127,6 +139,31 @@ export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: Dashbo
 
       {/* Main Content */}
       <main className="px-8 py-8">
+        {/* Metrics Summary */}
+        <div className="mb-8">
+          <div className="bg-green-50 border border-green-200 p-6 rounded-2xl">
+            <h2 className="text-xl font-semibold mb-4 text-green-800">Tus Métricas Actuales</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{metrics.leads}</div>
+                <div className="text-sm text-gray-600">Leads</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{metrics.visitas_agendadas}</div>
+                <div className="text-sm text-gray-600">Visitas Agendadas</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{metrics.visitas_casa}</div>
+                <div className="text-sm text-gray-600">Visitas Casa</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{metrics.ventas}</div>
+                <div className="text-sm text-gray-600">Ventas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Executive Summary */}
         <div className="mb-8">
           <div className="bg-navy text-white p-6 rounded-lg">
