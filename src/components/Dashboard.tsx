@@ -119,8 +119,7 @@ export function Dashboard({ formData }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
-  const [generatedSummaries, setGeneratedSummaries] = useState<string[]>([]);
-  const [showAllSummaries, setShowAllSummaries] = useState(false);
+  const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
 
   const handleRegenerateSummary = async () => {
     if (!formData) return;
@@ -147,28 +146,26 @@ export function Dashboard({ formData }: DashboardProps) {
       const result = await response.json();
       const summary = result.executiveSummary || result.summary || 'Resumen generado por AI';
 
-      setGeneratedSummaries(prev => [...prev, summary]);
+      setGeneratedSummary(summary);
 
     } catch (error) {
       console.error('Error generating executive summary:', error);
-      setGeneratedSummaries(prev => [...prev, 'Error al generar el resumen ejecutivo.']);
+      setGeneratedSummary('Error al generar el resumen ejecutivo.');
     } finally {
       setRegenerating(false);
     }
   };
 
   const downloadAsPDF = () => {
-    const latestSummary = generatedSummaries[generatedSummaries.length - 1];
-    if (!latestSummary) return;
+    if (!generatedSummary) return;
     const doc = new jsPDF();
-    doc.text(latestSummary, 10, 10);
+    doc.text(generatedSummary, 10, 10);
     doc.save('resumen_ejecutivo.pdf');
   };
 
   const downloadAsWord = () => {
-    const latestSummary = generatedSummaries[generatedSummaries.length - 1];
-    if (!latestSummary) return;
-    const blob = new Blob([latestSummary], { type: 'application/msword' });
+    if (!generatedSummary) return;
+    const blob = new Blob([generatedSummary], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -234,96 +231,12 @@ export function Dashboard({ formData }: DashboardProps) {
       {/* Header */}
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <span className="text-2xl font-bold text-navy font-dancing-script">PORTFOLIO CEO</span>
-            <div className="flex space-x-4">
-              {/* Resumenes ejecutivos section */}
-              <div className="bg-white border border-gray-200 rounded-lg p-3 min-w-[200px] cursor-pointer" onClick={() => setShowAllSummaries(!showAllSummaries)}>
-                <div className="text-sm font-semibold text-navy font-dancing-script mb-2">Resumenes ejecutivos ({generatedSummaries.length})</div>
-                {generatedSummaries.length > 0 ? (
-                  <div className="space-y-2">
-                    <p className="text-xs text-gray-700 line-clamp-3">{generatedSummaries[generatedSummaries.length - 1]}</p>
-                    <div className="flex space-x-1">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); downloadAsPDF(); }}
-                        className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-medium"
-                      >
-                        PDF
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); downloadAsWord(); }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium"
-                      >
-                        Word
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-xs text-gray-500">No generado</p>
-                )}
-              </div>
-              {/* Planes section */}
-              <div className="bg-white border border-gray-200 rounded-lg p-3 min-w-[200px]">
-                <div className="text-sm font-semibold text-navy font-dancing-script mb-2">Planes</div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-700">Acciones críticas: {data.analysis.critical_actions.length}</p>
-                  <p className="text-xs text-gray-700">Acciones rápidas: {data.next_30_days.length}</p>
-                  <button
-                    onClick={() => {/* TODO: Show plan details */}}
-                    className="text-xs text-navy hover:text-gray-600 underline"
-                  >
-                    Ver plan
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <span className="text-2xl font-bold text-navy font-dancing-script">PORTFOLIO CEO</span>
           <div className="text-right">
             <div className="text-sm text-gray-600 uppercase tracking-wide font-dancing-script">TOTAL PORTFOLIO VALUE</div>
             <div className="text-4xl font-bold text-navy">{data.metrics.portfolio_value}</div>
           </div>
         </div>
-        {showAllSummaries && generatedSummaries.length > 0 && (
-          <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
-            <h3 className="text-lg font-semibold text-navy font-dancing-script mb-4">Todos los Resumenes Ejecutivos</h3>
-            <div className="space-y-4">
-              {generatedSummaries.map((summary, index) => (
-                <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-sm font-medium text-navy">Resumen #{index + 1}</h4>
-                    <div className="flex space-x-1">
-                      <button
-                        onClick={() => {
-                          const doc = new jsPDF();
-                          doc.text(summary, 10, 10);
-                          doc.save(`resumen_ejecutivo_${index + 1}.pdf`);
-                        }}
-                        className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-medium"
-                      >
-                        PDF
-                      </button>
-                      <button
-                        onClick={() => {
-                          const blob = new Blob([summary], { type: 'application/msword' });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = `resumen_ejecutivo_${index + 1}.doc`;
-                          a.click();
-                          URL.revokeObjectURL(url);
-                        }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium"
-                      >
-                        Word
-                      </button>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700">{summary}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </header>
 
       {/* Main Content */}
@@ -373,6 +286,30 @@ export function Dashboard({ formData }: DashboardProps) {
             hasAlert={true}
           />
         </div>
+
+        {/* Executive Summary */}
+        {generatedSummary && (
+          <div className="mb-8">
+            <div className="bg-navy text-white p-6 rounded-lg">
+              <h1 className="text-xl font-semibold mb-2 font-dancing-script">EXECUTIVE SUMMARY</h1>
+              <p className="text-lg">{generatedSummary}</p>
+              <div className="flex space-x-2 mt-4">
+                <button
+                  onClick={downloadAsPDF}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium"
+                >
+                  Descargar PDF
+                </button>
+                <button
+                  onClick={downloadAsWord}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium"
+                >
+                  Descargar Word
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Opportunities and Actions */}
         <OpportunityList data={data} />
