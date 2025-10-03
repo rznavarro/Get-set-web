@@ -1,8 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MetricCard } from './MetricCard';
 import { OpportunityList } from './OpportunityList';
 import { MetricEditForm } from './MetricEditForm';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
+
+interface FinancialMetrics {
+  current_noi: string;
+  noi_opportunity: string;
+  portfolio_roi: string;
+  vacancy_cost: string;
+  turnover_risk: string;
+  capex_due: string;
+}
 
 interface DashboardProps {
   userCode: string;
@@ -10,18 +19,16 @@ interface DashboardProps {
   onEditMetrics: () => void;
   onNavigateToPlanes: () => void;
   onDataLoaded?: (data: AnalysisData) => void;
-  onFinancialMetricsUpdate?: (metrics: any) => void;
+  onFinancialMetricsUpdate?: (metrics: FinancialMetrics) => void;
 }
 
-// Function to get executive summary personalized with user name
-function getExecutiveSummary(userName: string | null, baseSummary: string): string {
-  if (userName) {
-    return `Hola ${userName}, bienvenido a tu dashboard de Portfolio CEO. Aquí encontrarás métricas clave de tu portafolio de inversiones inmobiliarias.`;
-  }
-  return baseSummary;
-}
 
 export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlanes, onDataLoaded, onFinancialMetricsUpdate }: DashboardProps) {
+  const handleDataLoaded = useCallback((data: AnalysisData) => {
+    if (onDataLoaded) {
+      onDataLoaded(data);
+    }
+  }, [onDataLoaded]);
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
@@ -33,7 +40,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [showMetricEdit, setShowMetricEdit] = useState(false);
-  const [financialMetrics, setFinancialMetrics] = useState<any>(null);
+  const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
 
 
   useEffect(() => {
@@ -49,9 +56,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         setData(analysisData);
 
         // Notify parent component that data is loaded
-        if (onDataLoaded) {
-          onDataLoaded(analysisData);
-        }
+        handleDataLoaded(analysisData);
 
         // Load metrics from localStorage
         const savedMetrics = localStorage.getItem('user_metrics');
@@ -111,7 +116,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     }
   };
 
-  const handleSaveMetrics = (newMetrics: typeof financialMetrics) => {
+  const handleSaveMetrics = (newMetrics: FinancialMetrics) => {
     setFinancialMetrics(newMetrics);
     localStorage.setItem('financial_metrics', JSON.stringify(newMetrics));
     if (onFinancialMetricsUpdate) {
@@ -228,19 +233,16 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
               title="Vacancy Cost"
               value={financialMetrics.vacancy_cost}
               insight="Monthly lost revenue"
-              hasAlert={true}
             />
             <MetricCard
               title="Turnover Risk"
               value={financialMetrics.turnover_risk}
               insight="Units requiring attention"
-              hasAlert={true}
             />
             <MetricCard
               title="CapEx Due"
               value={financialMetrics.capex_due}
               insight="Immediate capital required"
-              hasAlert={true}
             />
           </div>
         )}

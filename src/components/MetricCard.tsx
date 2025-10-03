@@ -4,11 +4,10 @@ interface MetricCardProps {
   title: string;
   value: string;
   insight?: string;
-  hasAlert?: boolean;
   isOpportunity?: boolean;
 }
 
-export function MetricCard({ title, value, insight, hasAlert, isOpportunity }: MetricCardProps) {
+export function MetricCard({ title, value, insight, isOpportunity }: MetricCardProps) {
   return (
     <div className="relative bg-white border border-gray-200 rounded-lg p-8 hover:border-black hover:shadow-sm transition-all duration-200">
 

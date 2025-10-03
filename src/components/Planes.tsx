@@ -3,6 +3,14 @@ import jsPDF from 'jspdf';
 import { AnalysisData } from '../lib/api';
 import { PlanCreationForm } from './PlanCreationForm';
 
+interface PlanFormData {
+  nombrePlan: string;
+  duracion: string;
+  roiEsperado: string;
+  especificaciones: string;
+  numeroPlanes: string;
+}
+
 interface Plan {
   id: string;
   title: string;
@@ -10,12 +18,21 @@ interface Plan {
   createdAt: string;
 }
 
+interface FinancialMetrics {
+  current_noi: string;
+  noi_opportunity: string;
+  portfolio_roi: string;
+  vacancy_cost: string;
+  turnover_risk: string;
+  capex_due: string;
+}
+
 interface PlanesProps {
   onNavigateToDashboard: () => void;
   dashboardData: AnalysisData | null;
   userName: string | null;
-  userMetrics: any;
-  financialMetrics: any;
+  userMetrics: Record<string, unknown>;
+  financialMetrics: FinancialMetrics | null;
 }
 
 export function Planes({ onNavigateToDashboard, dashboardData, userName, userMetrics, financialMetrics }: PlanesProps) {
@@ -36,7 +53,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
     setShowForm(false);
   };
 
-  const handleCreatePlan = async (formData: any) => {
+  const handleCreatePlan = async (formData: PlanFormData) => {
     if (!dashboardData) {
       alert('No hay datos del dashboard disponibles');
       return;
@@ -124,7 +141,7 @@ export function Planes({ onNavigateToDashboard, dashboardData, userName, userMet
     doc.text(`Plan: ${plan.title}`, 10, 10);
     doc.text(`Fecha: ${formatDate(plan.createdAt)}`, 10, 20);
 
-    let yPosition = 30;
+    const yPosition = 30;
     if (typeof plan.content === 'string') {
       // Split text into lines that fit the page width
       const lines = doc.splitTextToSize(plan.content, 180);

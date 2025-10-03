@@ -2,18 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Planes } from './components/Planes';
 import { WelcomeScreen } from './components/WelcomeScreen';
-import { CreateAccountScreen } from './components/CreateAccountScreen';
-import { LoginCodeScreen } from './components/LoginCodeScreen';
 import { OnboardingScreen } from './components/OnboardingScreen';
 import { AnalysisData } from './lib/api';
 
 type AppScreen = 'welcome' | 'onboarding' | 'dashboard' | 'planes';
 
+interface FinancialMetrics {
+  current_noi: string;
+  noi_opportunity: string;
+  portfolio_roi: string;
+  vacancy_cost: string;
+  turnover_risk: string;
+  capex_due: string;
+}
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('welcome');
-  const [userCode, setUserCode] = useState<string>('VORTEXIA');
+  const [userCode] = useState<string>('VORTEXIA');
   const [dashboardData, setDashboardData] = useState<AnalysisData | null>(null);
-  const [financialMetrics, setFinancialMetrics] = useState<any>(null);
+  const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
 
   // Check initial state on app start
   useEffect(() => {
@@ -51,8 +58,8 @@ function App() {
 
   const navigateToDashboard = () => setCurrentScreen('dashboard');
   const navigateToPlanes = () => setCurrentScreen('planes');
-  const handleDataUpdate = (data: any) => setDashboardData(data);
-  const handleFinancialMetricsUpdate = (metrics: any) => setFinancialMetrics(metrics);
+  const handleDataUpdate = (data: AnalysisData) => setDashboardData(data);
+  const handleFinancialMetricsUpdate = (metrics: FinancialMetrics) => setFinancialMetrics(metrics);
 
   const handleLogout = () => {
     localStorage.removeItem('access_granted');
