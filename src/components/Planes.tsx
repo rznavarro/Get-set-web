@@ -9,15 +9,69 @@ interface Plan {
 
 interface PlanesProps {
   onNavigateToDashboard: () => void;
+  dashboardData: any;
+  userName: string | null;
 }
 
-export function Planes({ onNavigateToDashboard }: PlanesProps) {
+export function Planes({ onNavigateToDashboard, dashboardData, userName }: PlanesProps) {
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [creatingPlan, setCreatingPlan] = useState(false);
 
   useEffect(() => {
     const savedPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
     setPlans(savedPlans);
   }, []);
+
+  const handleCreatePlan = async () => {
+    if (!dashboardData) {
+      alert('No hay datos del dashboard disponibles');
+      return;
+    }
+
+    setCreatingPlan(true);
+    try {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'create_plan',
+          timestamp: new Date().toISOString(),
+          userName: userName,
+          dashboardData: dashboardData
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      // Save plan to localStorage
+      const existingPlans = JSON.parse(localStorage.getItem('portfolio_ceo_plans') || '[]');
+      const newPlan = {
+        id: `plan-${Date.now()}`,
+        title: result.title || `Plan ${existingPlans.length + 1}`,
+        content: result,
+        createdAt: new Date().toISOString()
+      };
+      existingPlans.push(newPlan);
+      localStorage.setItem('portfolio_ceo_plans', JSON.stringify(existingPlans));
+
+      // Update local state
+      setPlans(existingPlans);
+
+      alert('Plan creado exitosamente');
+
+    } catch (error) {
+      console.error('Error creating plan:', error);
+      alert('Error al crear el plan. Intenta nuevamente.');
+    } finally {
+      setCreatingPlan(false);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
@@ -49,10 +103,15 @@ export function Planes({ onNavigateToDashboard }: PlanesProps) {
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-navy">Mis Planes</h1>
           <button
-            onClick={onNavigateToDashboard}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all"
+            onClick={handleCreatePlan}
+            disabled={creatingPlan}
+            className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+              creatingPlan
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-600 hover:bg-green-700'
+            }`}
           >
-            Crear Nuevo Plan
+            {creatingPlan ? 'Creando...' : 'Crear Nuevo Plan'}
           </button>
         </div>
 
@@ -60,10 +119,15 @@ export function Planes({ onNavigateToDashboard }: PlanesProps) {
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">No tienes planes creados aún.</p>
             <button
-              onClick={onNavigateToDashboard}
-              className="mt-4 px-6 py-3 bg-navy text-white rounded-lg font-semibold hover:bg-gray-600 transition-all"
+              onClick={handleCreatePlan}
+              disabled={creatingPlan}
+              className={`mt-4 px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+                creatingPlan
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700'
+              }`}
             >
-              Crear tu primer plan
+              {creatingPlan ? 'Creando...' : 'Crear tu primer plan'}
             </button>
           </div>
         ) : (

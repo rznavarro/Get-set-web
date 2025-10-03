@@ -6,6 +6,7 @@ import { AnalysisData, getLatestAnalysis } from '../lib/api';
 interface DashboardProps {
   userName: string | null;
   onNavigateToPlanes: () => void;
+  onDataUpdate: (data: any) => void;
 }
 
 // Function to get executive summary personalized with user name
@@ -16,7 +17,7 @@ function getExecutiveSummary(userName: string | null, baseSummary: string): stri
   return baseSummary;
 }
 
-export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
+export function Dashboard({ userName, onNavigateToPlanes, onDataUpdate }: DashboardProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
@@ -42,6 +43,7 @@ export function Dashboard({ userName, onNavigateToPlanes }: DashboardProps) {
           }
         };
         setData(personalizedData);
+        onDataUpdate(personalizedData);
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {

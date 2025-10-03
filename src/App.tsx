@@ -8,6 +8,7 @@ type AppScreen = 'login' | 'dashboard' | 'planes';
 function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('login');
   const [userName, setUserName] = useState<string | null>(null);
+  const [dashboardData, setDashboardData] = useState<any>(null);
 
   // Check initial state on app start
   useEffect(() => {
@@ -32,14 +33,15 @@ function App() {
 
   const navigateToDashboard = () => setCurrentScreen('dashboard');
   const navigateToPlanes = () => setCurrentScreen('planes');
+  const handleDataUpdate = (data: any) => setDashboardData(data);
 
   switch (currentScreen) {
     case 'login':
       return <LoginScreen onLogin={handleLogin} />;
     case 'dashboard':
-      return <Dashboard userName={userName} onNavigateToPlanes={navigateToPlanes} />;
+      return <Dashboard userName={userName} onNavigateToPlanes={navigateToPlanes} onDataUpdate={handleDataUpdate} />;
     case 'planes':
-      return <Planes onNavigateToDashboard={navigateToDashboard} />;
+      return <Planes onNavigateToDashboard={navigateToDashboard} dashboardData={dashboardData} userName={userName} />;
     default:
       return <LoginScreen onLogin={handleLogin} />;
   }
