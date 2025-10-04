@@ -231,6 +231,38 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         visitas_casa: userMetrics.visitas_casa,
         ventas: userMetrics.ventas
       },
+      financial_metrics_details: [
+        {
+          title: "Current NOI",
+          value: financialMetrics?.current_noi,
+          description: "Monthly recurring income"
+        },
+        {
+          title: "NOI Opportunity",
+          value: financialMetrics?.noi_opportunity,
+          description: "Potential additional income"
+        },
+        {
+          title: "Portfolio ROI",
+          value: financialMetrics?.portfolio_roi,
+          description: "Annual return on investment"
+        },
+        {
+          title: "Vacancy Cost",
+          value: financialMetrics?.vacancy_cost,
+          description: "Monthly lost revenue"
+        },
+        {
+          title: "Turnover Risk",
+          value: financialMetrics?.turnover_risk,
+          description: "Units requiring attention"
+        },
+        {
+          title: "CapEx Due",
+          value: financialMetrics?.capex_due,
+          description: "Immediate capital required"
+        }
+      ],
       top_opportunities: topOpportunities,
       quick_actions: quickActionsFormatted
     };
