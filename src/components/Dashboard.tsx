@@ -119,19 +119,6 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
 
       // Build dashboard text representation
       const dashboardText = `
-Tus Métricas Actuales
-${userMetrics.leads}
-Leads
-${userMetrics.visitas_agendadas}
-Visitas Agendadas
-${userMetrics.visitas_casa}
-Visitas Casa
-${userMetrics.ventas}
-Ventas
-
-EXECUTIVE SUMMARY
-${data.analysis.executive_summary}
-
 Current NOI
 ${financialMetrics?.current_noi}
 Monthly recurring income
@@ -156,9 +143,6 @@ CapEx Due
 ${financialMetrics?.capex_due}
 Immediate capital required
 
-Executive Summary
-${executiveSummaryResponse || 'No generado aún'}
-
 Top Opportunities
 ${topOpportunities.map((opp: any) => `
 ${opp.titulo}
@@ -171,6 +155,16 @@ Quick Actions (Next 30 Days)
 ${quickActionsFormatted.map((action: any) => `
 ${action.descripcion}
 `).join('')}
+
+Tus Métricas Actuales
+${userMetrics.leads}
+Leads
+${userMetrics.visitas_agendadas}
+Visitas Agendadas
+${userMetrics.visitas_casa}
+Visitas Casa
+${userMetrics.ventas}
+Ventas
       `.trim();
 
       const currentData = {
