@@ -184,6 +184,43 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     setShowSalesEdit(false);
   };
 
+  const handleSendFinancialMetrics = async () => {
+    if (!financialMetrics) return;
+
+    const currentData = {
+      action: 'send_financial_metrics',
+      timestamp: new Date().toISOString(),
+      userCode: userCode,
+      metrics: {
+        current_noi: financialMetrics.current_noi,
+        noi_opportunity: financialMetrics.noi_opportunity,
+        portfolio_roi: financialMetrics.portfolio_roi,
+        vacancy_cost: financialMetrics.vacancy_cost,
+        turnover_risk: financialMetrics.turnover_risk,
+        capex_due: financialMetrics.capex_due
+      }
+    };
+
+    try {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      alert('Métricas financieras enviadas exitosamente');
+    } catch (error) {
+      console.error('Error sending financial metrics:', error);
+      alert('Error al enviar métricas financieras');
+    }
+  };
+
   const handleNavigateToPlanes = async () => {
     // Load current dynamic data
     const savedMetrics = localStorage.getItem('user_metrics');
@@ -377,7 +414,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         )}
 
         {/* Action Buttons */}
-        <div className="mb-8 flex space-x-4 justify-center">
+        <div className="mb-8 flex space-x-4 justify-center flex-wrap">
           <button
             onClick={handleGenerateExecutiveSummary}
             disabled={generatingSummary || !financialMetrics}
@@ -403,6 +440,14 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
           >
             Ver Planes
           </button>
+          {financialMetrics && (
+            <button
+              onClick={handleSendFinancialMetrics}
+              className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
+            >
+              Enviar Métricas Financieras
+            </button>
+          )}
         </div>
 
         {/* Executive Summary Response */}
