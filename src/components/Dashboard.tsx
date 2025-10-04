@@ -117,6 +117,62 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         completada: false
       }));
 
+      // Build dashboard text representation
+      const dashboardText = `
+Tus Métricas Actuales
+${userMetrics.leads}
+Leads
+${userMetrics.visitas_agendadas}
+Visitas Agendadas
+${userMetrics.visitas_casa}
+Visitas Casa
+${userMetrics.ventas}
+Ventas
+
+EXECUTIVE SUMMARY
+${data.analysis.executive_summary}
+
+Current NOI
+${financialMetrics?.current_noi}
+Monthly recurring income
+
+NOI Opportunity
+${financialMetrics?.noi_opportunity}
+Potential additional income
+
+Portfolio ROI
+${financialMetrics?.portfolio_roi}
+Annual return on investment
+
+Vacancy Cost
+${financialMetrics?.vacancy_cost}
+Monthly lost revenue
+
+Turnover Risk
+${financialMetrics?.turnover_risk}
+Units requiring attention
+
+CapEx Due
+${financialMetrics?.capex_due}
+Immediate capital required
+
+Executive Summary
+${executiveSummaryResponse || 'No generado aún'}
+
+Top Opportunities
+${topOpportunities.map((opp: any) => `
+${opp.titulo}
+${opp.descripcion}
+${opp.valor_anual}
+${opp.prioridad}
+`).join('')}
+
+Quick Actions (Next 30 Days)
+${quickActionsFormatted.map((action: any) => `
+${action.descripcion}
+`).join('')}
+      `.trim();
+
       const currentData = {
         action: 'generate_executive_summary',
         timestamp: new Date().toISOString(),
@@ -134,6 +190,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
           visitas_casa: userMetrics.visitas_casa,
           ventas: userMetrics.ventas
         },
+        dashboard_text: dashboardText,
         top_opportunities: topOpportunities,
         quick_actions: quickActionsFormatted
       };
