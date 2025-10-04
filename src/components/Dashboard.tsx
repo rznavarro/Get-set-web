@@ -273,7 +273,7 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
 
     let responseText = '';
     try {
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
+      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
