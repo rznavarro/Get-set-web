@@ -38,7 +38,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
       <div className="bg-white border border-gray-200 rounded-2xl shadow-xl max-w-md w-full p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">CEO Dashboard</h1>
+          <h1 className="text-3xl font-bold text-black mb-2">zyre.luxe</h1>
           <p className="text-black">Ingresa tu código de acceso</p>
         </div>
 
