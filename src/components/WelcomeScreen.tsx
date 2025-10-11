@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const logo = '/logo.png';
 
 interface WelcomeScreenProps {
   onAccessGranted: () => void;
@@ -40,8 +41,8 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
         <div className="mb-8">
           <div className="relative">
             {/* Logo at top left */}
-            <div className="absolute top-0 left-0 w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-              <span className="text-gray-400 text-xs">LOGO</span>
+            <div className="absolute top-0 left-0 w-12 h-12 flex items-center justify-center">
+              <img src={logo} alt="Zyre.Luxe Logo" className="w-12 h-12" />
             </div>
             {/* Title moved to the right */}
             <div className="flex justify-center">

@@ -4,6 +4,7 @@ import { OpportunityList } from './OpportunityList';
 import { MetricEditForm } from './MetricEditForm';
 import { SalesMetricsEditForm } from './SalesMetricsEditForm';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
+const logo = '/logo.png';
 
 interface FinancialMetrics {
   current_noi: string;
@@ -416,6 +417,7 @@ ${action.descripcion}
       {/* Header */}
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
+          <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8" />
           <span className="text-2xl font-bold text-black font-dancing-script">Zyre.Luxe</span>
           <div className="flex space-x-2">
             <button
