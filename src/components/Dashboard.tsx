@@ -416,7 +416,7 @@ ${action.descripcion}
       {/* Header */}
       <header className="border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-black font-dancing-script">zyre.luxe</span>
+          <span className="text-2xl font-bold text-black font-dancing-script">Zyre.Luxe</span>
           <div className="flex space-x-2">
             <button
               onClick={onEditMetrics}

@@ -18,7 +18,7 @@ interface FinancialMetrics {
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('welcome');
-  const [userCode] = useState<string>('zyre.luxe');
+  const [userCode] = useState<string>('Zyre.Luxe');
   const [dashboardData, setDashboardData] = useState<AnalysisData | null>(null);
   const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
 
