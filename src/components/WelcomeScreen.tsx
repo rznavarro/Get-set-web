@@ -23,7 +23,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (accessCode.toLowerCase() === 'vortexia') {
+    if (accessCode.toLowerCase() === 'zyre.luxe') {
       localStorage.setItem('access_granted', 'true');
       onAccessGranted();
     } else {
