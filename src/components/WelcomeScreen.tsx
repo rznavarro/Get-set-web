@@ -37,9 +37,15 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="bg-white border border-gray-200 rounded-2xl shadow-xl max-w-md w-full p-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">Zyre.Luxe</h1>
-          <p className="text-black">Ingresa tu código de acceso</p>
+        <div className="mb-8">
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            {/* Logo placeholder */}
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="text-gray-400 text-xs">LOGO</span>
+            </div>
+            <h1 className="text-3xl font-bold text-black">Zyre.Luxe</h1>
+          </div>
+          <p className="text-center text-black">Ingresa tu código de acceso</p>
         </div>
 
         {/* Form */}
