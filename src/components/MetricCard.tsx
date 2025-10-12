@@ -60,7 +60,13 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
           <h3 className="text-sm font-medium text-[#EAEAEA]/80 uppercase tracking-wider font-['Inter']">
             {title}
           </h3>
-          {getIcon(title)}
+          <button
+            onClick={handleDoubleClick}
+            className="p-1 rounded-full hover:bg-[#D4AF37]/20 transition-colors duration-200 group/icon"
+            title={`Edit ${title}`}
+          >
+            {getIcon(title)}
+          </button>
         </div>
 
         {isEditing ? (
@@ -91,8 +97,6 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
         ) : (
           <div
             className="text-4xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
-            onDoubleClick={handleDoubleClick}
-            title="Double-click to edit"
           >
             {value}
           </div>
