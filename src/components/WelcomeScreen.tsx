@@ -39,15 +39,9 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
       <div className="bg-black border border-gray-700 rounded-2xl shadow-xl max-w-md w-full p-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="relative">
-            {/* Logo at top left */}
-            <div className="absolute top-0 left-0 w-12 h-12 flex items-center justify-center">
-              <img src={logo} alt="Zyre.Luxe Logo" className="w-12 h-12" />
-            </div>
-            {/* Title moved to the right */}
-            <div className="flex justify-center">
-              <h1 className="text-3xl font-bold text-white ml-16">Zyre.Luxe</h1>
-            </div>
+          <div className="flex justify-center items-center space-x-3">
+            <img src={logo} alt="Zyre.Luxe Logo" className="w-12 h-12" />
+            <h1 className="text-3xl font-bold text-white">Zyre.Luxe</h1>
           </div>
           <p className="text-center text-white mt-4">Ingresa tu código de acceso</p>
         </div>
