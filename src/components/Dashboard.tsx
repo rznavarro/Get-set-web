@@ -92,6 +92,40 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
      setShowMetricEdit(false);
    };
 
+  const handleMetricEdit = (title: string, newValue: string) => {
+    if (!instagramMetrics) return;
+
+    const updatedMetrics = { ...instagramMetrics };
+
+    // Map title to metric key
+    switch (title) {
+      case 'Reach':
+        updatedMetrics.reach = newValue;
+        break;
+      case 'Interactions':
+        updatedMetrics.interactions = newValue;
+        break;
+      case 'Followers':
+        updatedMetrics.followers = newValue;
+        break;
+      case 'Follower Growth':
+        updatedMetrics.follower_growth = newValue;
+        break;
+      case 'Reel Views':
+        updatedMetrics.reel_views = newValue;
+        break;
+      case 'Profile Clicks':
+        updatedMetrics.profile_clicks = newValue;
+        break;
+    }
+
+    setInstagramMetrics(updatedMetrics);
+    localStorage.setItem('instagram_metrics', JSON.stringify(updatedMetrics));
+    if (onInstagramMetricsUpdate) {
+      onInstagramMetricsUpdate(updatedMetrics);
+    }
+  };
+
   const handleSaveSalesMetrics = (newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
     setMetrics(newMetrics);
     localStorage.setItem('user_metrics', JSON.stringify(newMetrics));
@@ -351,32 +385,38 @@ ${action.descripcion}
               title="Reach"
               value={instagramMetrics.reach}
               insight="Unique accounts reached"
+              onEdit={handleMetricEdit}
             />
             <MetricCard
               title="Interactions"
               value={instagramMetrics.interactions}
               insight="Total engagement"
               isOpportunity={true}
+              onEdit={handleMetricEdit}
             />
             <MetricCard
               title="Followers"
               value={instagramMetrics.followers}
               insight="Current follower count"
+              onEdit={handleMetricEdit}
             />
             <MetricCard
               title="Follower Growth"
               value={instagramMetrics.follower_growth}
               insight="Growth in last 7 days"
+              onEdit={handleMetricEdit}
             />
             <MetricCard
               title="Reel Views"
               value={instagramMetrics.reel_views}
               insight="Total video views"
+              onEdit={handleMetricEdit}
             />
             <MetricCard
               title="Profile Clicks"
               value={instagramMetrics.profile_clicks}
               insight="Link clicks from profile"
+              onEdit={handleMetricEdit}
             />
           </div>
         )}
