@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 interface SalesMetrics {
-  leads: number;
-  visitas_agendadas: number;
-  visitas_casa: number;
-  ventas: number;
+  clicks: number;
+  sales: number;
+  commissions: number;
+  ctr: number;
 }
 
 interface SalesMetricsEditFormProps {
@@ -15,10 +15,10 @@ interface SalesMetricsEditFormProps {
 
 export function SalesMetricsEditForm({ currentMetrics, onSave, onCancel }: SalesMetricsEditFormProps) {
   const [metrics, setMetrics] = useState<SalesMetrics>(currentMetrics || {
-    leads: 0,
-    visitas_agendadas: 0,
-    visitas_casa: 0,
-    ventas: 0
+    clicks: 0,
+    sales: 0,
+    commissions: 0,
+    ctr: 0
   });
 
   const handleInputChange = (field: keyof SalesMetrics, value: string) => {
@@ -37,61 +37,61 @@ export function SalesMetricsEditForm({ currentMetrics, onSave, onCancel }: Sales
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-        <h2 className="text-2xl font-bold text-black mb-6">Editar Métricas de Ventas</h2>
+        <h2 className="text-2xl font-bold text-black mb-6">Edit Sales Metrics</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <label htmlFor="leads" className="block text-sm font-medium text-gray-700 mb-2">
-                Leads
+              <label htmlFor="clicks" className="block text-sm font-medium text-gray-700 mb-2">
+                Clicks
               </label>
               <input
                 type="number"
-                id="leads"
-                value={metrics.leads}
-                onChange={(e) => handleInputChange('leads', e.target.value)}
+                id="clicks"
+                value={metrics.clicks}
+                onChange={(e) => handleInputChange('clicks', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 min="0"
               />
             </div>
 
             <div>
-              <label htmlFor="visitas_agendadas" className="block text-sm font-medium text-gray-700 mb-2">
-                Visitas Agendadas
+              <label htmlFor="ctr" className="block text-sm font-medium text-gray-700 mb-2">
+                CTR
               </label>
               <input
                 type="number"
-                id="visitas_agendadas"
-                value={metrics.visitas_agendadas}
-                onChange={(e) => handleInputChange('visitas_agendadas', e.target.value)}
+                id="ctr"
+                value={metrics.ctr}
+                onChange={(e) => handleInputChange('ctr', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 min="0"
               />
             </div>
 
             <div>
-              <label htmlFor="visitas_casa" className="block text-sm font-medium text-gray-700 mb-2">
-                Visitas Casa
+              <label htmlFor="commissions" className="block text-sm font-medium text-gray-700 mb-2">
+                Commissions
               </label>
               <input
                 type="number"
-                id="visitas_casa"
-                value={metrics.visitas_casa}
-                onChange={(e) => handleInputChange('visitas_casa', e.target.value)}
+                id="commissions"
+                value={metrics.commissions}
+                onChange={(e) => handleInputChange('commissions', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 min="0"
               />
             </div>
 
             <div>
-              <label htmlFor="ventas" className="block text-sm font-medium text-gray-700 mb-2">
-                Ventas
+              <label htmlFor="sales" className="block text-sm font-medium text-gray-700 mb-2">
+                Sales
               </label>
               <input
                 type="number"
-                id="ventas"
-                value={metrics.ventas}
-                onChange={(e) => handleInputChange('ventas', e.target.value)}
+                id="sales"
+                value={metrics.sales}
+                onChange={(e) => handleInputChange('sales', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 min="0"
               />
@@ -104,13 +104,13 @@ export function SalesMetricsEditForm({ currentMetrics, onSave, onCancel }: Sales
               onClick={onCancel}
               className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
               className="px-6 py-2 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 transition-colors"
             >
-              Guardar Cambios
+              Save Changes
             </button>
           </div>
         </form>

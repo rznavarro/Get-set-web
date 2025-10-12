@@ -34,10 +34,10 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
-    leads: 0,
-    visitas_agendadas: 0,
-    visitas_casa: 0,
-    ventas: 0
+    clicks: 0,
+    sales: 0,
+    commissions: 0,
+    ctr: 0
   });
   const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
   const [generatingSummary, setGeneratingSummary] = useState(false);
@@ -157,15 +157,15 @@ ${quickActionsFormatted.map((action: any) => `
 ${action.descripcion}
 `).join('')}
 
-Tus Métricas Actuales
-${userMetrics.leads}
-Leads
-${userMetrics.visitas_agendadas}
-Visitas Agendadas
-${userMetrics.visitas_casa}
-Visitas Casa
-${userMetrics.ventas}
-Ventas
+Your Current Metrics
+${userMetrics.clicks}
+Clicks
+${userMetrics.sales}
+Sales
+${userMetrics.commissions}
+Commissions
+${userMetrics.ctr}
+CTR
       `.trim();
 
       const currentData = {
@@ -180,10 +180,10 @@ Ventas
           vacancy_cost: financialMetrics?.vacancy_cost,
           turnover_risk: financialMetrics?.turnover_risk,
           capex_due: financialMetrics?.capex_due,
-          leads: userMetrics.leads,
-          visitas_agendadas: userMetrics.visitas_agendadas,
-          visitas_casa: userMetrics.visitas_casa,
-          ventas: userMetrics.ventas
+          clicks: userMetrics.clicks,
+          sales: userMetrics.sales,
+          commissions: userMetrics.commissions,
+          ctr: userMetrics.ctr
         },
         dashboard_text: dashboardText,
         top_opportunities: topOpportunities,
@@ -222,7 +222,7 @@ Ventas
     setShowMetricEdit(false);
   };
 
-  const handleSaveSalesMetrics = (newMetrics: { leads: number; visitas_agendadas: number; visitas_casa: number; ventas: number }) => {
+  const handleSaveSalesMetrics = (newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
     setMetrics(newMetrics);
     localStorage.setItem('user_metrics', JSON.stringify(newMetrics));
     setShowSalesEdit(false);
@@ -268,15 +268,15 @@ Ventas
 
     // Build dashboard text representation
     const dashboardText = `
-Tus Métricas Actuales
-${userMetrics.leads}
-Leads
-${userMetrics.visitas_agendadas}
-Visitas Agendadas
-${userMetrics.visitas_casa}
-Visitas Casa
-${userMetrics.ventas}
-Ventas
+Your Current Metrics
+${userMetrics.clicks}
+Clicks
+${userMetrics.sales}
+Sales
+${userMetrics.commissions}
+Commissions
+${userMetrics.ctr}
+CTR
 
 EXECUTIVE SUMMARY
 ${data?.analysis.executive_summary}
@@ -331,10 +331,10 @@ ${action.descripcion}
         vacancy_cost: financialMetrics?.vacancy_cost,
         turnover_risk: financialMetrics?.turnover_risk,
         capex_due: financialMetrics?.capex_due,
-        leads: userMetrics.leads,
-        visitas_agendadas: userMetrics.visitas_agendadas,
-        visitas_casa: userMetrics.visitas_casa,
-        ventas: userMetrics.ventas
+        clicks: userMetrics.clicks,
+        sales: userMetrics.sales,
+        commissions: userMetrics.commissions,
+        ctr: userMetrics.ctr
       },
       financial_metrics_details: [
         {
@@ -398,37 +398,39 @@ ${action.descripcion}
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-black">Loading dashboard...</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Loading dashboard...</div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-black">No analysis data available</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">No analysis data available</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
       {/* Header */}
-      <header className="border-b border-gray-200 px-8 py-6">
+      <header className="border-b border-gray-700 px-8 py-6">
         <div className="flex items-center justify-between">
-          <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8" />
-          <span className="text-2xl font-bold text-black font-dancing-script">Zyre.Luxe</span>
+          <div className="flex items-center space-x-2">
+            <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8" />
+            <span className="text-2xl font-bold text-white font-dancing-script">Zyre.Luxe</span>
+          </div>
           <div className="flex space-x-2">
             <button
               onClick={onEditMetrics}
-              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
             >
               Editar Métricas
             </button>
             <button
               onClick={onLogout}
-              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
             >
               Cerrar Sesión
             </button>
@@ -440,44 +442,37 @@ ${action.descripcion}
       <main className="px-8 py-8">
         {/* Metrics Summary */}
         <div className="mb-8">
-          <div className="bg-white border border-gray-200 p-6 rounded-2xl">
+          <div className="bg-black border border-gray-700 p-6 rounded-2xl">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-black">Tus Métricas Actuales</h2>
+              <h2 className="text-xl font-semibold text-white">Your Current Metrics</h2>
               <button
                 onClick={() => setShowSalesEdit(true)}
-                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
               >
-                Editar
+                Edit
               </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-black">{metrics.leads}</div>
-                <div className="text-sm text-black">Leads</div>
+                <div className="text-2xl font-bold text-white">{metrics.clicks}</div>
+                <div className="text-sm text-white">Clicks</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-black">{metrics.visitas_agendadas}</div>
-                <div className="text-sm text-black">Visitas Agendadas</div>
+                <div className="text-2xl font-bold text-white">{metrics.sales}</div>
+                <div className="text-sm text-white">Sales</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-black">{metrics.visitas_casa}</div>
-                <div className="text-sm text-black">Visitas Casa</div>
+                <div className="text-2xl font-bold text-white">{metrics.commissions}</div>
+                <div className="text-sm text-white">Commissions</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-black">{metrics.ventas}</div>
-                <div className="text-sm text-black">Ventas</div>
+                <div className="text-2xl font-bold text-white">{metrics.ctr}</div>
+                <div className="text-sm text-white">CTR</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Executive Summary */}
-        <div className="mb-8">
-          <div className="bg-black text-white p-6 rounded-lg">
-            <h1 className="text-xl font-semibold mb-2 font-dancing-script">EXECUTIVE SUMMARY</h1>
-            <p className="text-lg">{data.analysis.executive_summary}</p>
-          </div>
-        </div>
 
         {/* Metrics Grid */}
         {financialMetrics && (
@@ -524,7 +519,7 @@ ${action.descripcion}
             className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
               generatingSummary || !financialMetrics
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-black hover:bg-gray-800 hover:shadow-lg'
+                : 'bg-yellow-600 hover:bg-yellow-700 hover:shadow-lg'
             }`}
           >
             {generatingSummary ? 'Generando...' : 'Generar Executive Summary'}
@@ -532,14 +527,14 @@ ${action.descripcion}
           {financialMetrics && (
             <button
               onClick={() => setShowMetricEdit(true)}
-              className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
+              className="px-6 py-3 rounded-lg font-semibold text-white bg-yellow-600 hover:bg-yellow-700 hover:shadow-lg transition-all"
             >
               Edit
             </button>
           )}
           <button
             onClick={handleNavigateToPlanes}
-            className="px-6 py-3 rounded-lg font-semibold text-white bg-black hover:bg-gray-800 hover:shadow-lg transition-all"
+            className="px-6 py-3 rounded-lg font-semibold text-white bg-yellow-600 hover:bg-yellow-700 hover:shadow-lg transition-all"
           >
             Ver Planes
           </button>
@@ -548,9 +543,9 @@ ${action.descripcion}
         {/* Executive Summary Response */}
         {executiveSummaryResponse && (
           <div className="mb-8">
-            <div className="bg-white border border-gray-200 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-black">Executive Summary</h2>
-              <div className="text-black whitespace-pre-wrap">{executiveSummaryResponse}</div>
+            <div className="bg-black border border-gray-700 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-white">Executive Summary</h2>
+              <div className="text-white whitespace-pre-wrap">{executiveSummaryResponse}</div>
             </div>
           </div>
         )}

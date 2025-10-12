@@ -35,8 +35,8 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-xl max-w-md w-full p-8">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="bg-black border border-gray-700 rounded-2xl shadow-xl max-w-md w-full p-8">
         {/* Header */}
         <div className="mb-8">
           <div className="relative">
@@ -46,16 +46,16 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
             </div>
             {/* Title moved to the right */}
             <div className="flex justify-center">
-              <h1 className="text-3xl font-bold text-black ml-16">Zyre.Luxe</h1>
+              <h1 className="text-3xl font-bold text-white ml-16">Zyre.Luxe</h1>
             </div>
           </div>
-          <p className="text-center text-black mt-4">Ingresa tu código de acceso</p>
+          <p className="text-center text-white mt-4">Ingresa tu código de acceso</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="accessCode" className="block text-sm font-medium text-black mb-2">
+            <label htmlFor="accessCode" className="block text-sm font-medium text-white mb-2">
               Código de Acceso
             </label>
             <input
@@ -63,7 +63,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
               type="password"
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-black focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-700 rounded-2xl focus:ring-2 focus:ring-yellow-600 focus:border-transparent"
               placeholder="Ingresa el código"
               required
               disabled={isLoading}
@@ -84,7 +84,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
             className={`w-full py-3 px-6 rounded-2xl font-semibold text-white transition-all ${
               isLoading || !accessCode.trim()
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl'
+                : 'bg-yellow-600 hover:bg-yellow-700 shadow-lg hover:shadow-xl'
             }`}
           >
             {isLoading ? 'Verificando...' : 'Acceder'}
@@ -93,7 +93,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-black">
+          <p className="text-sm text-white">
             Sistema exclusivo para miembros autorizados
           </p>
         </div>

@@ -8,10 +8,10 @@ interface OnboardingScreenProps {
 
 export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScreenProps) {
   const [metrics, setMetrics] = useState({
-    leads: '',
-    visitas_agendadas: '',
-    visitas_casa: '',
-    ventas: ''
+    clicks: '',
+    sales: '',
+    commissions: '',
+    ctr: ''
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
     // Validate that at least one metric is filled
     const hasData = Object.values(metrics).some(value => value.trim() !== '');
     if (!hasData) {
-      setError('Por favor ingresa al menos una métrica.');
+      setError('Please enter at least one metric.');
       return;
     }
 
@@ -49,7 +49,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
 
     } catch (error) {
       console.error('Error saving metrics:', error);
-      setError('Error al guardar las métricas. Inténtalo nuevamente.');
+      setError('Error saving metrics. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -60,68 +60,68 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Configuración Inicial</h1>
-          <p className="text-gray-600">Ingresa tus métricas actuales</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Initial Setup</h1>
+          <p className="text-gray-600">Enter your current metrics</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="leads" className="block text-sm font-medium text-gray-700 mb-2">
-                Leads
+              <label htmlFor="clicks" className="block text-sm font-medium text-gray-700 mb-2">
+                Clicks
               </label>
               <input
-                id="leads"
+                id="clicks"
                 type="text"
-                value={metrics.leads}
-                onChange={(e) => handleInputChange('leads', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={metrics.clicks}
+                onChange={(e) => handleInputChange('clicks', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
               />
             </div>
 
             <div>
-              <label htmlFor="visitas_agendadas" className="block text-sm font-medium text-gray-700 mb-2">
-                Visitas Agendadas
+              <label htmlFor="sales" className="block text-sm font-medium text-gray-700 mb-2">
+                Sales
               </label>
               <input
-                id="visitas_agendadas"
+                id="sales"
                 type="text"
-                value={metrics.visitas_agendadas}
-                onChange={(e) => handleInputChange('visitas_agendadas', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={metrics.sales}
+                onChange={(e) => handleInputChange('sales', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
               />
             </div>
 
             <div>
-              <label htmlFor="visitas_casa" className="block text-sm font-medium text-gray-700 mb-2">
-                Visitas Casa
+              <label htmlFor="commissions" className="block text-sm font-medium text-gray-700 mb-2">
+                Commissions
               </label>
               <input
-                id="visitas_casa"
+                id="commissions"
                 type="text"
-                value={metrics.visitas_casa}
-                onChange={(e) => handleInputChange('visitas_casa', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={metrics.commissions}
+                onChange={(e) => handleInputChange('commissions', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
               />
             </div>
 
             <div>
-              <label htmlFor="ventas" className="block text-sm font-medium text-gray-700 mb-2">
-                Ventas
+              <label htmlFor="ctr" className="block text-sm font-medium text-gray-700 mb-2">
+                CTR
               </label>
               <input
-                id="ventas"
+                id="ctr"
                 type="text"
-                value={metrics.ventas}
-                onChange={(e) => handleInputChange('ventas', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={metrics.ctr}
+                onChange={(e) => handleInputChange('ctr', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
               />
@@ -143,10 +143,10 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
               className={`w-full py-3 px-6 rounded-2xl font-semibold text-white transition-all ${
                 isLoading
                   ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl'
+                  : 'bg-yellow-600 hover:bg-yellow-700 shadow-lg hover:shadow-xl'
               }`}
             >
-              {isLoading ? 'Guardando...' : 'Guardar y Entrar al Dashboard'}
+              {isLoading ? 'Saving...' : 'Save and Enter Dashboard'}
             </button>
 
             <button
@@ -155,7 +155,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
               className="w-full py-3 px-6 bg-white hover:bg-gray-50 text-gray-600 font-semibold rounded-2xl border-2 border-gray-300 transition-all"
               disabled={isLoading}
             >
-              Saltar
+              Skip
             </button>
           </div>
         </form>
