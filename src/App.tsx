@@ -45,11 +45,8 @@ function App() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          setShowDashboard(true);
-          // Wait a moment then show dashboard
-          setTimeout(() => {
-            setCurrentScreen('dashboard');
-          }, 500);
+          // Show dashboard immediately when countdown reaches 0
+          setCurrentScreen('dashboard');
           return 0;
         }
         return prev - 1;
@@ -114,25 +111,15 @@ function App() {
             <div className="text-[#EAEAEA]/60 font-['Inter'] text-sm">
               Preparing your personalized dashboard...
             </div>
-
-            {/* Dashboard Preview (appears when countdown reaches 0) */}
-            {showDashboard && (
-              <div className="absolute inset-0 bg-[#0A0A0A]/95 backdrop-blur-sm flex items-center justify-center animate-fade-in">
-                <div className="text-center">
-                  <div className="text-6xl font-bold text-[#D4AF37] mb-4 font-['Cinzel'] animate-pulse">
-                    Welcome
-                  </div>
-                  <p className="text-[#EAEAEA] font-['Inter'] text-xl">
-                    Your luxury analytics dashboard is ready
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       );
     case 'dashboard':
-      return <Dashboard userCode={userCode} onLogout={handleLogout} onEditMetrics={() => {}} onNavigateToPlanes={navigateToPlanes} onDataLoaded={handleDataUpdate} />;
+      return (
+        <div className="animate-fade-in" style={{ animation: 'fadeIn 3s ease-in-out' }}>
+          <Dashboard userCode={userCode} onLogout={handleLogout} onEditMetrics={() => {}} onNavigateToPlanes={navigateToPlanes} onDataLoaded={handleDataUpdate} />
+        </div>
+      );
     case 'planes':
       return <Planes onNavigateToDashboard={navigateToDashboard} dashboardData={dashboardData} userName={userCode} userMetrics={JSON.parse(localStorage.getItem('user_metrics') || '{}')} financialMetrics={financialMetrics} />;
     default:
