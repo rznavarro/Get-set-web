@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MetricCard } from './MetricCard';
 import { MetricEditForm } from './MetricEditForm';
 import { SalesMetricsEditForm } from './SalesMetricsEditForm';
+import { ZyreChat } from './ZyreChat';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 const logo = '/logo.png';
 
@@ -425,6 +426,9 @@ ${action.descripcion}
 
 
       </main>
+
+      {/* Zyre Chat */}
+      <ZyreChat />
 
       {showMetricEdit && (
          <MetricEditForm
