@@ -56,19 +56,19 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="bg-gray-900 rounded-2xl shadow-xl max-w-md w-full p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Initial Setup</h1>
-          <p className="text-gray-600">Enter your current metrics</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Initial Setup</h1>
+          <p className="text-gray-300">Enter your current metrics</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="clicks" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="clicks" className="block text-sm font-medium text-white mb-2">
                 Clicks
               </label>
               <input
@@ -83,7 +83,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             </div>
 
             <div>
-              <label htmlFor="sales" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="sales" className="block text-sm font-medium text-white mb-2">
                 Sales
               </label>
               <input
@@ -98,7 +98,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             </div>
 
             <div>
-              <label htmlFor="commissions" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="commissions" className="block text-sm font-medium text-white mb-2">
                 Commissions
               </label>
               <input
@@ -113,7 +113,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             </div>
 
             <div>
-              <label htmlFor="ctr" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="ctr" className="block text-sm font-medium text-white mb-2">
                 CTR
               </label>
               <input
@@ -130,7 +130,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl">
+            <div className="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-2xl">
               {error}
             </div>
           )}
@@ -152,7 +152,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             <button
               type="button"
               onClick={onSkip}
-              className="w-full py-3 px-6 bg-white hover:bg-gray-50 text-gray-600 font-semibold rounded-2xl border-2 border-gray-300 transition-all"
+              className="w-full py-3 px-6 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-2xl border-2 border-gray-600 transition-all"
               disabled={isLoading}
             >
               Skip
