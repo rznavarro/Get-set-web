@@ -5,7 +5,7 @@ import { WelcomeScreen } from './components/WelcomeScreen';
 import { OnboardingScreen } from './components/OnboardingScreen';
 import { AnalysisData } from './lib/api';
 
-type AppScreen = 'welcome' | 'onboarding' | 'dashboard' | 'planes';
+type AppScreen = 'welcome' | 'dashboard' | 'planes';
 
 interface FinancialMetrics {
   current_noi: string;
@@ -25,34 +25,15 @@ function App() {
   // Check initial state on app start
   useEffect(() => {
     const accessGranted = localStorage.getItem('access_granted') === 'true';
-    const onboardingCompleted = localStorage.getItem('onboarding_completed') === 'true';
 
-    // Load financial metrics from localStorage
-    const savedFinancialMetrics = localStorage.getItem('financial_metrics');
-    if (savedFinancialMetrics) {
-      setFinancialMetrics(JSON.parse(savedFinancialMetrics));
-    }
-
-    if (accessGranted && onboardingCompleted) {
+    if (accessGranted) {
       setCurrentScreen('dashboard');
-    } else if (accessGranted) {
-      setCurrentScreen('onboarding');
     } else {
       setCurrentScreen('welcome');
     }
   }, []);
 
   const handleAccessGranted = () => {
-    setCurrentScreen('onboarding');
-  };
-
-  const handleOnboardingComplete = () => {
-    localStorage.setItem('onboarding_completed', 'true');
-    setCurrentScreen('dashboard');
-  };
-
-  const handleOnboardingSkip = () => {
-    localStorage.setItem('onboarding_completed', 'true');
     setCurrentScreen('dashboard');
   };
 
@@ -69,22 +50,16 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('access_granted');
-    localStorage.removeItem('onboarding_completed');
     localStorage.removeItem('user_metrics');
+    localStorage.removeItem('instagram_metrics');
     setCurrentScreen('welcome');
-  };
-
-  const handleEditMetrics = () => {
-    setCurrentScreen('onboarding');
   };
 
   switch (currentScreen) {
     case 'welcome':
       return <WelcomeScreen onAccessGranted={handleAccessGranted} />;
-    case 'onboarding':
-      return <OnboardingScreen userCode={userCode} onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />;
     case 'dashboard':
-      return <Dashboard userCode={userCode} onLogout={handleLogout} onEditMetrics={handleEditMetrics} onNavigateToPlanes={navigateToPlanes} onDataLoaded={handleDataUpdate} onFinancialMetricsUpdate={handleFinancialMetricsUpdate} />;
+      return <Dashboard userCode={userCode} onLogout={handleLogout} onEditMetrics={() => {}} onNavigateToPlanes={navigateToPlanes} onDataLoaded={handleDataUpdate} />;
     case 'planes':
       return <Planes onNavigateToDashboard={navigateToDashboard} dashboardData={dashboardData} userName={userCode} userMetrics={JSON.parse(localStorage.getItem('user_metrics') || '{}')} financialMetrics={financialMetrics} />;
     default:
