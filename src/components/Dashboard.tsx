@@ -340,7 +340,7 @@ ${action.descripcion}
           <div className="flex space-x-2">
             <button
               onClick={onLogout}
-              className="px-6 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30"
+              className="px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30"
             >
               Logout
             </button>
@@ -358,21 +358,21 @@ ${action.descripcion}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center group">
-                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.clicks}</div>
-                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Clicks</div>
-              </div>
-              <div className="text-center group">
-                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.sales}</div>
-                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Sales</div>
-              </div>
-              <div className="text-center group">
-                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.commissions}</div>
-                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Commissions</div>
-              </div>
-              <div className="text-center group">
-                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.ctr}</div>
-                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">CTR</div>
-              </div>
+                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.clicks}</div>
+                  <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Clicks</div>
+                </div>
+                <div className="text-center group">
+                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.sales}</div>
+                  <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Sales</div>
+                </div>
+                <div className="text-center group">
+                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.commissions}</div>
+                  <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Commissions</div>
+                </div>
+                <div className="text-center group">
+                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.ctr}</div>
+                  <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">CTR</div>
+                </div>
             </div>
           </div>
         </div>

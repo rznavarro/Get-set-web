@@ -70,19 +70,19 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full text-5xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-3 py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5]"
+              className="w-full text-4xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-3 py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5]"
               autoFocus
             />
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 justify-center">
               <button
                 onClick={handleSave}
-                className="px-3 py-1 bg-[#D4AF37] text-[#0A0A0A] rounded text-sm font-['Inter'] hover:bg-[#F5E6C5] transition-colors"
+                className="px-2 py-1 bg-[#D4AF37] text-[#0A0A0A] rounded text-xs font-['Inter'] font-medium hover:bg-[#F5E6C5] transition-colors"
               >
                 Save
               </button>
               <button
                 onClick={handleCancel}
-                className="px-3 py-1 bg-[#2C2C2C] text-[#EAEAEA] rounded text-sm font-['Inter'] hover:bg-[#404040] transition-colors"
+                className="px-2 py-1 bg-[#2C2C2C] text-[#EAEAEA] rounded text-xs font-['Inter'] font-medium hover:bg-[#404040] transition-colors"
               >
                 Cancel
               </button>
@@ -90,7 +90,7 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
           </div>
         ) : (
           <div
-            className="text-5xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+            className="text-4xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
             onDoubleClick={handleDoubleClick}
             title="Double-click to edit"
           >
