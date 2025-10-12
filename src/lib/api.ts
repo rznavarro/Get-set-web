@@ -12,13 +12,12 @@ export interface AnalysisData {
     }>;
   };
   metrics: {
-    portfolio_value: string;
-    current_noi: string;
-    noi_opportunity: string;
-    vacancy_cost: string;
-    turnover_risk: string;
-    capex_due: string;
-    portfolio_roi: string;
+    reach: string;
+    interactions: string;
+    followers: string;
+    follower_growth: string;
+    reel_views: string;
+    profile_clicks: string;
   };
   next_30_days: string[];
 }
@@ -82,13 +81,12 @@ export async function getLatestAnalysis(): Promise<AnalysisData | null> {
         ]
       },
       metrics: {
-        portfolio_value: "$12.4M",
-        current_noi: "$847K",
-        noi_opportunity: "$156K",
-        vacancy_cost: "$23K",
-        turnover_risk: "3 units",
-        capex_due: "$89K",
-        portfolio_roi: "14.2%"
+        reach: "50K",
+        interactions: "5.2K",
+        followers: "25K",
+        follower_growth: "+150",
+        reel_views: "120K",
+        profile_clicks: "850"
       },
       next_30_days: [
         "Enviar avisos aumento renta Oak Street",

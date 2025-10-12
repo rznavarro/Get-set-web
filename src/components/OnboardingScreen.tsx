@@ -8,10 +8,12 @@ interface OnboardingScreenProps {
 
 export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScreenProps) {
   const [metrics, setMetrics] = useState({
-    clicks: '',
-    sales: '',
-    commissions: '',
-    ctr: ''
+    reach: '',
+    interactions: '',
+    followers: '',
+    growth: '',
+    views: '',
+    link_clicks: ''
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +46,7 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Save metrics to localStorage for quick access
-      localStorage.setItem('user_metrics', JSON.stringify(metrics));
+      localStorage.setItem('instagram_metrics', JSON.stringify(metrics));
       onComplete();
 
     } catch (error) {
@@ -68,14 +70,14 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="clicks" className="block text-sm font-medium text-white mb-2">
-                Clicks
+              <label htmlFor="reach" className="block text-sm font-medium text-white mb-2">
+                Reach
               </label>
               <input
-                id="clicks"
+                id="reach"
                 type="text"
-                value={metrics.clicks}
-                onChange={(e) => handleInputChange('clicks', e.target.value)}
+                value={metrics.reach}
+                onChange={(e) => handleInputChange('reach', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
@@ -83,14 +85,14 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             </div>
 
             <div>
-              <label htmlFor="sales" className="block text-sm font-medium text-white mb-2">
-                Sales
+              <label htmlFor="interactions" className="block text-sm font-medium text-white mb-2">
+                Interactions
               </label>
               <input
-                id="sales"
+                id="interactions"
                 type="text"
-                value={metrics.sales}
-                onChange={(e) => handleInputChange('sales', e.target.value)}
+                value={metrics.interactions}
+                onChange={(e) => handleInputChange('interactions', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
@@ -98,14 +100,14 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             </div>
 
             <div>
-              <label htmlFor="commissions" className="block text-sm font-medium text-white mb-2">
-                Commissions
+              <label htmlFor="followers" className="block text-sm font-medium text-white mb-2">
+                Followers
               </label>
               <input
-                id="commissions"
+                id="followers"
                 type="text"
-                value={metrics.commissions}
-                onChange={(e) => handleInputChange('commissions', e.target.value)}
+                value={metrics.followers}
+                onChange={(e) => handleInputChange('followers', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}
@@ -113,14 +115,46 @@ export function OnboardingScreen({ userCode, onComplete, onSkip }: OnboardingScr
             </div>
 
             <div>
-              <label htmlFor="ctr" className="block text-sm font-medium text-white mb-2">
-                CTR
+              <label htmlFor="growth" className="block text-sm font-medium text-white mb-2">
+                Growth
               </label>
               <input
-                id="ctr"
+                id="growth"
                 type="text"
-                value={metrics.ctr}
-                onChange={(e) => handleInputChange('ctr', e.target.value)}
+                value={metrics.growth}
+                onChange={(e) => handleInputChange('growth', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                placeholder="0"
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="views" className="block text-sm font-medium text-white mb-2">
+                Views
+              </label>
+              <input
+                id="views"
+                type="text"
+                value={metrics.views}
+                onChange={(e) => handleInputChange('views', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                placeholder="0"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="link_clicks" className="block text-sm font-medium text-white mb-2">
+                Link Clicks
+              </label>
+              <input
+                id="link_clicks"
+                type="text"
+                value={metrics.link_clicks}
+                onChange={(e) => handleInputChange('link_clicks', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="0"
                 disabled={isLoading}

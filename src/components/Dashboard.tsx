@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MetricCard } from './MetricCard';
-import { OpportunityList } from './OpportunityList';
 import { MetricEditForm } from './MetricEditForm';
 import { SalesMetricsEditForm } from './SalesMetricsEditForm';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 const logo = '/logo.png';
 
-interface FinancialMetrics {
-  current_noi: string;
-  noi_opportunity: string;
-  portfolio_roi: string;
-  vacancy_cost: string;
-  turnover_risk: string;
-  capex_due: string;
-}
+interface InstagramMetrics {
+   reach: string;
+   interactions: string;
+   followers: string;
+   follower_growth: string;
+   reel_views: string;
+   profile_clicks: string;
+ }
 
 interface DashboardProps {
   userCode: string;
@@ -21,11 +20,11 @@ interface DashboardProps {
   onEditMetrics: () => void;
   onNavigateToPlanes: (response?: string) => void;
   onDataLoaded?: (data: AnalysisData) => void;
-  onFinancialMetricsUpdate?: (metrics: FinancialMetrics) => void;
+  onInstagramMetricsUpdate?: (metrics: InstagramMetrics) => void;
 }
 
 
-export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlanes, onDataLoaded, onFinancialMetricsUpdate }: DashboardProps) {
+export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlanes, onDataLoaded, onInstagramMetricsUpdate }: DashboardProps) {
   const handleDataLoaded = useCallback((data: AnalysisData) => {
     if (onDataLoaded) {
       onDataLoaded(data);
@@ -39,11 +38,9 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     commissions: 0,
     ctr: 0
   });
-  const [executiveSummaryResponse, setExecutiveSummaryResponse] = useState<string | null>(null);
-  const [generatingSummary, setGeneratingSummary] = useState(false);
   const [showMetricEdit, setShowMetricEdit] = useState(false);
   const [showSalesEdit, setShowSalesEdit] = useState(false);
-  const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
+  const [instagramMetrics, setInstagramMetrics] = useState<InstagramMetrics | null>(null);
 
 
   useEffect(() => {
@@ -67,14 +64,14 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
           setMetrics(JSON.parse(savedMetrics));
         }
 
-        // Load financial metrics from localStorage or initialize from API data
-        const savedFinancialMetrics = localStorage.getItem('financial_metrics');
-        if (savedFinancialMetrics) {
-          setFinancialMetrics(JSON.parse(savedFinancialMetrics));
-        } else {
-          // Initialize with API data if no saved data exists
-          setFinancialMetrics(analysisData.metrics);
-        }
+        // Load instagram metrics from localStorage or initialize from API data
+         const savedInstagramMetrics = localStorage.getItem('instagram_metrics');
+         if (savedInstagramMetrics) {
+           setInstagramMetrics(JSON.parse(savedInstagramMetrics));
+         } else {
+           // Initialize with API data if no saved data exists
+           setInstagramMetrics(analysisData.metrics);
+         }
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {
@@ -85,142 +82,15 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     fetchData();
   }, []);
 
-  const handleGenerateExecutiveSummary = async () => {
-    if (!data) return;
 
-    setGeneratingSummary(true);
-    try {
-      // Load current dynamic data
-      const savedMetrics = localStorage.getItem('user_metrics');
-      const userMetrics = savedMetrics ? JSON.parse(savedMetrics) : metrics;
-
-      const savedCriticalActions = localStorage.getItem('portfolio_ceo_critical_actions');
-      const criticalActions = savedCriticalActions ? JSON.parse(savedCriticalActions) : data.analysis.critical_actions.map((action, index) => ({
-        id: `critical-${index}`,
-        ...action
-      }));
-
-      const savedQuickActions = localStorage.getItem('portfolio_ceo_quick_actions');
-      const quickActions = savedQuickActions ? JSON.parse(savedQuickActions) : data.next_30_days.map((action, index) => ({
-        id: `quick-${index}`,
-        action
-      }));
-
-      const topOpportunities = criticalActions.map((action: any) => ({
-        titulo: action.action,
-        descripcion: action.details,
-        valor_anual: action.impact,
-        prioridad: action.urgency === 'high' ? 'ALTA' : action.urgency === 'medium' ? 'MEDIA' : 'BAJA'
-      }));
-
-      const quickActionsFormatted = quickActions.map((action: any) => ({
-        descripcion: action.action,
-        completada: false
-      }));
-
-      // Build dashboard text representation
-      const dashboardText = `
-Current NOI
-${financialMetrics?.current_noi}
-Monthly recurring income
-
-NOI Opportunity
-${financialMetrics?.noi_opportunity}
-Potential additional income
-
-Portfolio ROI
-${financialMetrics?.portfolio_roi}
-Annual return on investment
-
-Vacancy Cost
-${financialMetrics?.vacancy_cost}
-Monthly lost revenue
-
-Turnover Risk
-${financialMetrics?.turnover_risk}
-Units requiring attention
-
-CapEx Due
-${financialMetrics?.capex_due}
-Immediate capital required
-
-Top Opportunities
-${topOpportunities.map((opp: any) => `
-${opp.titulo}
-${opp.descripcion}
-${opp.valor_anual}
-${opp.prioridad}
-`).join('')}
-
-Quick Actions (Next 30 Days)
-${quickActionsFormatted.map((action: any) => `
-${action.descripcion}
-`).join('')}
-
-Your Current Metrics
-${userMetrics.clicks}
-Clicks
-${userMetrics.sales}
-Sales
-${userMetrics.commissions}
-Commissions
-${userMetrics.ctr}
-CTR
-      `.trim();
-
-      const currentData = {
-        action: 'generate_executive_summary',
-        timestamp: new Date().toISOString(),
-        userCode: userCode,
-        executiveSummary: data.analysis.executive_summary,
-        metricas: {
-          current_noi: financialMetrics?.current_noi,
-          noi_opportunity: financialMetrics?.noi_opportunity,
-          portfolio_roi: financialMetrics?.portfolio_roi,
-          vacancy_cost: financialMetrics?.vacancy_cost,
-          turnover_risk: financialMetrics?.turnover_risk,
-          capex_due: financialMetrics?.capex_due,
-          clicks: userMetrics.clicks,
-          sales: userMetrics.sales,
-          commissions: userMetrics.commissions,
-          ctr: userMetrics.ctr
-        },
-        dashboard_text: dashboardText,
-        top_opportunities: topOpportunities,
-        quick_actions: quickActionsFormatted
-      };
-
-      const response = await fetch('https://n8n.srv880021.hstgr.cloud/webhook-test/CeoPremium3', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(currentData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.text();
-      setExecutiveSummaryResponse(result);
-
-    } catch (error) {
-      console.error('Error generating executive summary:', error);
-      setExecutiveSummaryResponse('Error al generar el resumen ejecutivo.');
-    } finally {
-      setGeneratingSummary(false);
-    }
-  };
-
-  const handleSaveMetrics = (newMetrics: FinancialMetrics) => {
-    setFinancialMetrics(newMetrics);
-    localStorage.setItem('financial_metrics', JSON.stringify(newMetrics));
-    if (onFinancialMetricsUpdate) {
-      onFinancialMetricsUpdate(newMetrics);
-    }
-    setShowMetricEdit(false);
-  };
+  const handleSaveMetrics = (newMetrics: InstagramMetrics) => {
+     setInstagramMetrics(newMetrics);
+     localStorage.setItem('instagram_metrics', JSON.stringify(newMetrics));
+     if (onInstagramMetricsUpdate) {
+       onInstagramMetricsUpdate(newMetrics);
+     }
+     setShowMetricEdit(false);
+   };
 
   const handleSaveSalesMetrics = (newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
     setMetrics(newMetrics);
@@ -281,29 +151,29 @@ CTR
 EXECUTIVE SUMMARY
 ${data?.analysis.executive_summary}
 
-Current NOI
-${financialMetrics?.current_noi}
-Monthly recurring income
+Reach
+${instagramMetrics?.reach}
+Unique accounts reached
 
-NOI Opportunity
-${financialMetrics?.noi_opportunity}
-Potential additional income
+Interactions
+${instagramMetrics?.interactions}
+Total engagement
 
-Portfolio ROI
-${financialMetrics?.portfolio_roi}
-Annual return on investment
+Followers
+${instagramMetrics?.followers}
+Current follower count
 
-Vacancy Cost
-${financialMetrics?.vacancy_cost}
-Monthly lost revenue
+Follower Growth
+${instagramMetrics?.follower_growth}
+Growth in last 7 days
 
-Turnover Risk
-${financialMetrics?.turnover_risk}
-Units requiring attention
+Reel Views
+${instagramMetrics?.reel_views}
+Total video views
 
-CapEx Due
-${financialMetrics?.capex_due}
-Immediate capital required
+Profile Clicks
+${instagramMetrics?.profile_clicks}
+Link clicks from profile
 
 Top Opportunities
 ${topOpportunities.map((opp: any) => `
@@ -325,47 +195,47 @@ ${action.descripcion}
       userCode: userCode,
       executiveSummary: data?.analysis.executive_summary,
       metricas: {
-        current_noi: financialMetrics?.current_noi,
-        noi_opportunity: financialMetrics?.noi_opportunity,
-        portfolio_roi: financialMetrics?.portfolio_roi,
-        vacancy_cost: financialMetrics?.vacancy_cost,
-        turnover_risk: financialMetrics?.turnover_risk,
-        capex_due: financialMetrics?.capex_due,
+        reach: instagramMetrics?.reach,
+        interactions: instagramMetrics?.interactions,
+        followers: instagramMetrics?.followers,
+        follower_growth: instagramMetrics?.follower_growth,
+        reel_views: instagramMetrics?.reel_views,
+        profile_clicks: instagramMetrics?.profile_clicks,
         clicks: userMetrics.clicks,
         sales: userMetrics.sales,
         commissions: userMetrics.commissions,
         ctr: userMetrics.ctr
       },
-      financial_metrics_details: [
+      instagram_metrics_details: [
         {
-          title: "Current NOI",
-          value: financialMetrics?.current_noi,
-          description: "Monthly recurring income"
+          title: "Reach",
+          value: instagramMetrics?.reach,
+          description: "Unique accounts reached"
         },
         {
-          title: "NOI Opportunity",
-          value: financialMetrics?.noi_opportunity,
-          description: "Potential additional income"
+          title: "Interactions",
+          value: instagramMetrics?.interactions,
+          description: "Total engagement"
         },
         {
-          title: "Portfolio ROI",
-          value: financialMetrics?.portfolio_roi,
-          description: "Annual return on investment"
+          title: "Followers",
+          value: instagramMetrics?.followers,
+          description: "Current follower count"
         },
         {
-          title: "Vacancy Cost",
-          value: financialMetrics?.vacancy_cost,
-          description: "Monthly lost revenue"
+          title: "Follower Growth",
+          value: instagramMetrics?.follower_growth,
+          description: "Growth in last 7 days"
         },
         {
-          title: "Turnover Risk",
-          value: financialMetrics?.turnover_risk,
-          description: "Units requiring attention"
+          title: "Reel Views",
+          value: instagramMetrics?.reel_views,
+          description: "Total video views"
         },
         {
-          title: "CapEx Due",
-          value: financialMetrics?.capex_due,
-          description: "Immediate capital required"
+          title: "Profile Clicks",
+          value: instagramMetrics?.profile_clicks,
+          description: "Link clicks from profile"
         }
       ],
       dashboard_text: dashboardText,
@@ -389,7 +259,7 @@ ${action.descripcion}
         responseText = `Error: ${response.status} ${response.statusText}`;
       }
     } catch (error) {
-      console.error('Error sending data to CeoPremium3:', error);
+      console.error('Error sending data to CeoPremium:', error);
       responseText = `Error: ${error}`;
     }
 
@@ -418,21 +288,22 @@ ${action.descripcion}
       <header className="border-b border-gray-700 px-8 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8" />
-            <span className="text-2xl font-bold text-white font-dancing-script">Zyre.Luxe</span>
+            <a
+              href="https://www.instagram.com/zyre.luxe/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+            >
+              <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8" />
+              <span className="text-2xl font-bold text-white font-dancing-script">Zyre.Luxe</span>
+            </a>
           </div>
           <div className="flex space-x-2">
-            <button
-              onClick={onEditMetrics}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
-            >
-              Editar Métricas
-            </button>
             <button
               onClick={onLogout}
               className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
             >
-              Cerrar Sesión
+              Logout
             </button>
           </div>
         </div>
@@ -445,12 +316,6 @@ ${action.descripcion}
           <div className="bg-black border border-gray-700 p-6 rounded-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-white">Your Current Metrics</h2>
-              <button
-                onClick={() => setShowSalesEdit(true)}
-                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
-              >
-                Edit
-              </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
@@ -475,93 +340,54 @@ ${action.descripcion}
 
 
         {/* Metrics Grid */}
-        {financialMetrics && (
+        {instagramMetrics && (
           <div className="grid grid-cols-3 gap-6 mb-12">
             <MetricCard
-              title="Current NOI"
-              value={financialMetrics.current_noi}
-              insight="Monthly recurring income"
+              title="Reach"
+              value={instagramMetrics.reach}
+              insight="Unique accounts reached"
             />
             <MetricCard
-              title="NOI Opportunity"
-              value={financialMetrics.noi_opportunity}
-              insight="Potential additional income"
+              title="Interactions"
+              value={instagramMetrics.interactions}
+              insight="Total engagement"
               isOpportunity={true}
             />
             <MetricCard
-              title="Portfolio ROI"
-              value={financialMetrics.portfolio_roi}
-              insight="Annual return on investment"
+              title="Followers"
+              value={instagramMetrics.followers}
+              insight="Current follower count"
             />
             <MetricCard
-              title="Vacancy Cost"
-              value={financialMetrics.vacancy_cost}
-              insight="Monthly lost revenue"
+              title="Follower Growth"
+              value={instagramMetrics.follower_growth}
+              insight="Growth in last 7 days"
             />
             <MetricCard
-              title="Turnover Risk"
-              value={financialMetrics.turnover_risk}
-              insight="Units requiring attention"
+              title="Reel Views"
+              value={instagramMetrics.reel_views}
+              insight="Total video views"
             />
             <MetricCard
-              title="CapEx Due"
-              value={financialMetrics.capex_due}
-              insight="Immediate capital required"
+              title="Profile Clicks"
+              value={instagramMetrics.profile_clicks}
+              insight="Link clicks from profile"
             />
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="mb-8 flex space-x-4 justify-center flex-wrap">
-          <button
-            onClick={handleGenerateExecutiveSummary}
-            disabled={generatingSummary || !financialMetrics}
-            className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
-              generatingSummary || !financialMetrics
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-yellow-600 hover:bg-yellow-700 hover:shadow-lg'
-            }`}
-          >
-            {generatingSummary ? 'Generando...' : 'Generar Executive Summary'}
-          </button>
-          {financialMetrics && (
-            <button
-              onClick={() => setShowMetricEdit(true)}
-              className="px-6 py-3 rounded-lg font-semibold text-white bg-yellow-600 hover:bg-yellow-700 hover:shadow-lg transition-all"
-            >
-              Edit
-            </button>
-          )}
-          <button
-            onClick={handleNavigateToPlanes}
-            className="px-6 py-3 rounded-lg font-semibold text-white bg-yellow-600 hover:bg-yellow-700 hover:shadow-lg transition-all"
-          >
-            Ver Planes
-          </button>
-        </div>
-
-        {/* Executive Summary Response */}
-        {executiveSummaryResponse && (
-          <div className="mb-8">
-            <div className="bg-black border border-gray-700 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-white">Executive Summary</h2>
-              <div className="text-white whitespace-pre-wrap">{executiveSummaryResponse}</div>
-            </div>
-          </div>
-        )}
 
 
-        {/* Opportunities and Actions */}
-        <OpportunityList data={data} />
+
       </main>
 
       {showMetricEdit && (
-        <MetricEditForm
-          currentMetrics={financialMetrics}
-          onSave={handleSaveMetrics}
-          onCancel={handleCancelMetricEdit}
-        />
-      )}
+         <MetricEditForm
+           currentMetrics={instagramMetrics}
+           onSave={handleSaveMetrics}
+           onCancel={handleCancelMetricEdit}
+         />
+       )}
 
       {showSalesEdit && (
         <SalesMetricsEditForm
