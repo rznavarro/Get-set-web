@@ -283,25 +283,30 @@ ${action.descripcion}
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-radial from-[#0F0F0F] via-[#0A0A0A] to-[#050505] opacity-50"></div>
       {/* Header */}
-      <header className="border-b border-gray-700 px-8 py-6">
+      <header className="relative z-10 border-b border-[#2C2C2C] px-8 py-6 backdrop-blur-sm bg-[#0F0F0F]/80">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <a
               href="https://www.instagram.com/zyre.luxe/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-2 hover:opacity-80 transition-all duration-300 group"
             >
-              <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8" />
-              <span className="text-2xl font-bold text-white font-dancing-script">Zyre.Luxe</span>
+              <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
+              <span className="text-2xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300">Zyre.Luxe</span>
             </a>
+            <div className="ml-4">
+              <p className="text-xs text-[#EAEAEA]/70 font-['Inter'] italic">Data that speaks. Intelligence that sells.</p>
+            </div>
           </div>
           <div className="flex space-x-2">
             <button
               onClick={onLogout}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+              className="px-6 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30"
             >
               Logout
             </button>
@@ -310,29 +315,29 @@ ${action.descripcion}
       </header>
 
       {/* Main Content */}
-      <main className="px-8 py-8">
+      <main className="relative z-10 px-8 py-8">
         {/* Metrics Summary */}
         <div className="mb-8">
-          <div className="bg-black border border-gray-700 p-6 rounded-2xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-white">Your Current Metrics</h2>
+          <div className="bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] p-6 rounded-2xl shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-[#EAEAEA] font-['Cinzel'] tracking-wide">Your Current Metrics</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">{metrics.clicks}</div>
-                <div className="text-sm text-white">Clicks</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="text-center group">
+                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.clicks}</div>
+                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Clicks</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">{metrics.sales}</div>
-                <div className="text-sm text-white">Sales</div>
+              <div className="text-center group">
+                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.sales}</div>
+                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Sales</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">{metrics.commissions}</div>
-                <div className="text-sm text-white">Commissions</div>
+              <div className="text-center group">
+                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.commissions}</div>
+                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Commissions</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">{metrics.ctr}</div>
-                <div className="text-sm text-white">CTR</div>
+              <div className="text-center group">
+                <div className="text-3xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.ctr}</div>
+                <div className="text-sm text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">CTR</div>
               </div>
             </div>
           </div>
@@ -341,7 +346,7 @@ ${action.descripcion}
 
         {/* Metrics Grid */}
         {instagramMetrics && (
-          <div className="grid grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-3 gap-8 mb-12">
             <MetricCard
               title="Reach"
               value={instagramMetrics.reach}
