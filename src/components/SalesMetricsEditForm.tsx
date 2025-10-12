@@ -15,10 +15,10 @@ interface SalesMetricsEditFormProps {
 
 export function SalesMetricsEditForm({ currentMetrics, onSave, onCancel }: SalesMetricsEditFormProps) {
   const [metrics, setMetrics] = useState<SalesMetrics>(currentMetrics || {
-    clicks: 0,
-    sales: 0,
-    commissions: 0,
-    ctr: 0
+    clicks: 30,
+    sales: 300,
+    commissions: 200,
+    ctr: 20
   });
 
   const handleInputChange = (field: keyof SalesMetrics, value: string) => {
