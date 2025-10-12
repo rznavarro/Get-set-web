@@ -5,7 +5,7 @@ import { WelcomeScreen } from './components/WelcomeScreen';
 import { OnboardingScreen } from './components/OnboardingScreen';
 import { AnalysisData } from './lib/api';
 
-type AppScreen = 'login' | 'dashboard' | 'planes';
+type AppScreen = 'welcome' | 'login' | 'dashboard' | 'planes';
 
 interface FinancialMetrics {
   current_noi: string;
@@ -17,7 +17,7 @@ interface FinancialMetrics {
 }
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>('login');
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>('welcome');
   const [userCode] = useState<string>('Zyre.Luxe');
   const [dashboardData, setDashboardData] = useState<AnalysisData | null>(null);
   const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
@@ -30,7 +30,7 @@ function App() {
     if (accessGranted) {
       setCurrentScreen('dashboard');
     } else {
-      setCurrentScreen('login');
+      setCurrentScreen('welcome');
     }
   }, []);
 
@@ -66,10 +66,12 @@ function App() {
     localStorage.removeItem('access_granted');
     localStorage.removeItem('user_metrics');
     localStorage.removeItem('instagram_metrics');
-    setCurrentScreen('login');
+    setCurrentScreen('welcome');
   };
 
   switch (currentScreen) {
+    case 'welcome':
+      return <WelcomeScreen onAccessGranted={handleAccessGranted} />;
     case 'login':
       return (
         <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
@@ -114,22 +116,7 @@ function App() {
     case 'planes':
       return <Planes onNavigateToDashboard={navigateToDashboard} dashboardData={dashboardData} userName={userCode} userMetrics={JSON.parse(localStorage.getItem('user_metrics') || '{}')} financialMetrics={financialMetrics} />;
     default:
-      return (
-        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-radial from-[#0F0F0F] via-[#0A0A0A] to-[#050505] opacity-50"></div>
-          <div className="relative z-10 text-center">
-            <div className="mb-8">
-              <img src="/logo.png" alt="Zyre.Luxe Logo" className="w-20 h-20 mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-[#EAEAEA] mb-2 font-['Cinzel']">Zyre.Luxe</h1>
-              <p className="text-[#EAEAEA]/70 font-['Inter']">Premium Analytics Access</p>
-            </div>
-            <div className="text-8xl font-bold text-[#D4AF37] mb-4 font-['Cinzel'] drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">
-              60
-            </div>
-            <p className="text-[#EAEAEA]/80 font-['Inter'] text-lg">Initializing Dashboard</p>
-          </div>
-        </div>
-      );
+      return <WelcomeScreen onAccessGranted={handleAccessGranted} />;
   }
 }
 
