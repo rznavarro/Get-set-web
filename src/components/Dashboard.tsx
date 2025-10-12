@@ -356,6 +356,12 @@ ${action.descripcion}
           <div className="bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] p-6 rounded-2xl shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-[#EAEAEA] font-['Cinzel'] tracking-wide">Your Current Metrics</h2>
+              <button
+                onClick={() => setShowSalesEdit(true)}
+                className="px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30"
+              >
+                Edit Metrics
+              </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center group">
