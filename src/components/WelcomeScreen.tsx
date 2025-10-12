@@ -24,7 +24,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (accessCode.toLowerCase() === 'Zyre.Luxe') {
+    if (accessCode.toLowerCase() === 'zyre.luxe' || accessCode === 'Zyre.Luxe') {
       localStorage.setItem('access_granted', 'true');
       onAccessGranted();
     } else {
