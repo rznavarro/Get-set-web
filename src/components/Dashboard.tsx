@@ -47,7 +47,25 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
   useEffect(() => {
     async function fetchData() {
       try {
-        const analysisData = await getLatestAnalysis();
+        // Check if data was preloaded during countdown
+        const preloadedAnalysis = sessionStorage.getItem('preloaded_analysis');
+        const preloadedUserMetrics = sessionStorage.getItem('preloaded_user_metrics');
+        const preloadedInstagramMetrics = sessionStorage.getItem('preloaded_instagram_metrics');
+
+        let analysisData;
+
+        if (preloadedAnalysis) {
+          // Use preloaded data
+          analysisData = JSON.parse(preloadedAnalysis);
+
+          // Clear preloaded data from sessionStorage
+          sessionStorage.removeItem('preloaded_analysis');
+          sessionStorage.removeItem('preloaded_user_metrics');
+          sessionStorage.removeItem('preloaded_instagram_metrics');
+        } else {
+          // Fetch fresh data if not preloaded
+          analysisData = await getLatestAnalysis();
+        }
 
         if (!analysisData) {
           setData(null);
@@ -59,20 +77,28 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
         // Notify parent component that data is loaded
         handleDataLoaded(analysisData);
 
-        // Load metrics from localStorage
-        const savedMetrics = localStorage.getItem('user_metrics');
-        if (savedMetrics) {
-          setMetrics(JSON.parse(savedMetrics));
+        // Load metrics from preloaded data or localStorage
+        if (preloadedUserMetrics) {
+          setMetrics(JSON.parse(preloadedUserMetrics));
+        } else {
+          const savedMetrics = localStorage.getItem('user_metrics');
+          if (savedMetrics) {
+            setMetrics(JSON.parse(savedMetrics));
+          }
         }
 
-        // Load instagram metrics from localStorage or initialize from API data
-         const savedInstagramMetrics = localStorage.getItem('instagram_metrics');
-         if (savedInstagramMetrics) {
-           setInstagramMetrics(JSON.parse(savedInstagramMetrics));
-         } else {
-           // Initialize with API data if no saved data exists
-           setInstagramMetrics(analysisData.metrics);
-         }
+        // Load instagram metrics from preloaded data or localStorage or initialize from API data
+        if (preloadedInstagramMetrics) {
+          setInstagramMetrics(JSON.parse(preloadedInstagramMetrics));
+        } else {
+          const savedInstagramMetrics = localStorage.getItem('instagram_metrics');
+          if (savedInstagramMetrics) {
+            setInstagramMetrics(JSON.parse(savedInstagramMetrics));
+          } else {
+            // Initialize with API data if no saved data exists
+            setInstagramMetrics(analysisData.metrics);
+          }
+        }
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {

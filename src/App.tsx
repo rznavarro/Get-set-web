@@ -38,17 +38,46 @@ function App() {
     setCurrentScreen('login');
     setCountdown(60);
 
-    // Start countdown
+    // Start countdown and preload dashboard data
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          setCurrentScreen('dashboard');
+          // Preload dashboard data before showing it
+          preloadDashboardData().then(() => {
+            setCurrentScreen('dashboard');
+          });
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+  };
+
+  // Function to preload dashboard data
+  const preloadDashboardData = async () => {
+    try {
+      // Preload API data in background
+      const { getLatestAnalysis } = await import('./lib/api');
+      const analysisData = await getLatestAnalysis();
+
+      if (analysisData) {
+        // Preload metrics from localStorage
+        const savedMetrics = localStorage.getItem('user_metrics');
+        const savedInstagramMetrics = localStorage.getItem('instagram_metrics');
+
+        // Cache the data for immediate use
+        sessionStorage.setItem('preloaded_analysis', JSON.stringify(analysisData));
+        if (savedMetrics) {
+          sessionStorage.setItem('preloaded_user_metrics', savedMetrics);
+        }
+        if (savedInstagramMetrics) {
+          sessionStorage.setItem('preloaded_instagram_metrics', savedInstagramMetrics);
+        }
+      }
+    } catch (error) {
+      console.error('Error preloading dashboard data:', error);
+    }
   };
 
   const navigateToDashboard = () => setCurrentScreen('dashboard');
