@@ -74,29 +74,29 @@ function App() {
       return <WelcomeScreen onAccessGranted={handleAccessGranted} />;
     case 'login':
       return (
-        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
+        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden p-4 gpu-accelerated">
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-radial from-[#0F0F0F] via-[#0A0A0A] to-[#050505] opacity-50"></div>
 
-          <div className="relative z-10 text-center">
+          <div className="relative z-10 text-center w-full max-w-sm animate-fade-in">
             {/* Logo */}
-            <div className="mb-8">
-              <img src="/logo.png" alt="Zyre.Luxe Logo" className="w-20 h-20 mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-[#EAEAEA] mb-2 font-['Cinzel']">Zyre.Luxe</h1>
-              <p className="text-[#EAEAEA]/70 font-['Inter']">Premium Analytics Access</p>
+            <div className="mb-6 xs:mb-8">
+              <img src="/logo.png" alt="Zyre.Luxe Logo" className="w-16 h-16 xs:w-20 xs:h-20 mx-auto mb-4" />
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-[#EAEAEA] mb-2 font-['Cinzel']">Zyre.Luxe</h1>
+              <p className="text-[#EAEAEA]/70 font-['Inter'] text-sm xs:text-base">Premium Analytics Access</p>
             </div>
 
             {/* Countdown Timer */}
-            <div className="mb-8">
-              <div className="text-8xl font-bold text-[#D4AF37] mb-4 font-['Cinzel'] drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">
+            <div className="mb-6 xs:mb-8">
+              <div className="text-6xl xs:text-7xl sm:text-8xl font-bold text-[#D4AF37] mb-4 font-['Cinzel'] drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">
                 {countdown}
               </div>
-              <p className="text-[#EAEAEA]/80 font-['Inter'] text-lg">Initializing Dashboard</p>
+              <p className="text-[#EAEAEA]/80 font-['Inter'] text-base xs:text-lg">Initializing Dashboard</p>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-80 mx-auto mb-6">
-              <div className="bg-[#2C2C2C] rounded-full h-2 overflow-hidden">
+            <div className="w-full max-w-xs xs:max-w-sm mx-auto mb-4 xs:mb-6">
+              <div className="bg-[#2C2C2C] rounded-full h-2 xs:h-3 overflow-hidden">
                 <div
                   className="bg-[#D4AF37] h-full rounded-full transition-all duration-1000 ease-linear"
                   style={{ width: `${((60 - countdown) / 60) * 100}%` }}
@@ -105,7 +105,7 @@ function App() {
             </div>
 
             {/* Loading Text */}
-            <div className="text-[#EAEAEA]/60 font-['Inter'] text-sm">
+            <div className="text-[#EAEAEA]/60 font-['Inter'] text-xs xs:text-sm px-4">
               Preparing your exclusive analytics experience...
             </div>
           </div>

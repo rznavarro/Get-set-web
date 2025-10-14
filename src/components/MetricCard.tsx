@@ -51,18 +51,18 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
   };
 
   return (
-    <div className="relative bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] rounded-xl p-8 hover:border-[#D4AF37] hover:shadow-2xl hover:shadow-[#D4AF37]/20 transition-all duration-500 group overflow-hidden cursor-pointer">
+    <div className="relative bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] rounded-xl p-4 xs:p-6 sm:p-8 hover:border-[#D4AF37] hover:shadow-2xl hover:shadow-[#D4AF37]/20 transition-all duration-500 group overflow-hidden cursor-pointer min-h-[120px] xs:min-h-[140px] sm:min-h-[160px] touch-feedback gpu-accelerated">
       {/* Subtle glow effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-      <div className="relative z-10 space-y-4">
+      <div className="relative z-10 space-y-3 xs:space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-[#EAEAEA]/80 uppercase tracking-wider font-['Inter']">
+          <h3 className="text-xs xs:text-sm font-medium text-[#EAEAEA]/80 uppercase tracking-wider font-['Inter']">
             {title}
           </h3>
           <button
             onClick={handleDoubleClick}
-            className="p-1 rounded-full hover:bg-[#D4AF37]/20 transition-colors duration-200 group/icon"
+            className="p-1 xs:p-2 rounded-full hover:bg-[#D4AF37]/20 transition-colors duration-200 group/icon min-h-[32px] min-w-[32px] flex items-center justify-center"
             title={`Edit ${title}`}
           >
             {getIcon(title)}
@@ -76,19 +76,19 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full text-4xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-3 py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5]"
+              className="w-full text-2xl xs:text-3xl sm:text-4xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-3 py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5] min-h-[44px]"
               autoFocus
             />
             <div className="flex space-x-2 justify-center">
               <button
                 onClick={handleSave}
-                className="px-2 py-1 bg-[#D4AF37] text-[#0A0A0A] rounded text-xs font-['Inter'] font-medium hover:bg-[#F5E6C5] transition-colors"
+                className="px-3 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded text-sm font-['Inter'] font-medium hover:bg-[#F5E6C5] transition-colors min-h-[44px] min-w-[60px]"
               >
                 Save
               </button>
               <button
                 onClick={handleCancel}
-                className="px-2 py-1 bg-[#2C2C2C] text-[#EAEAEA] rounded text-xs font-['Inter'] font-medium hover:bg-[#404040] transition-colors"
+                className="px-3 py-2 bg-[#2C2C2C] text-[#EAEAEA] rounded text-sm font-['Inter'] font-medium hover:bg-[#404040] transition-colors min-h-[44px] min-w-[60px]"
               >
                 Cancel
               </button>
@@ -96,14 +96,14 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
           </div>
         ) : (
           <div
-            className="text-4xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+            className="text-2xl xs:text-3xl sm:text-4xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
           >
             {value}
           </div>
         )}
 
         {insight && !isEditing && (
-          <p className="text-sm text-[#EAEAEA]/60 font-['Inter'] leading-relaxed">
+          <p className="text-xs xs:text-sm text-[#EAEAEA]/60 font-['Inter'] leading-relaxed">
             {insight}
           </p>
         )}

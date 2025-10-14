@@ -318,11 +318,11 @@ ${action.descripcion}
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden">
+    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden gpu-accelerated smooth-scroll">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-radial from-[#0F0F0F] via-[#0A0A0A] to-[#050505] opacity-50"></div>
       {/* Header */}
-      <header className="relative z-10 border-b border-[#2C2C2C] px-8 py-6 backdrop-blur-sm bg-[#0F0F0F]/80">
+      <header className="relative z-10 border-b border-[#2C2C2C] px-4 xs:px-6 sm:px-8 py-4 xs:py-6 backdrop-blur-sm bg-[#0F0F0F]/80">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <a
@@ -331,17 +331,17 @@ ${action.descripcion}
               rel="noopener noreferrer"
               className="flex items-center space-x-2 hover:opacity-80 transition-all duration-300 group"
             >
-              <img src={logo} alt="Zyre.Luxe Logo" className="h-8 w-8 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
-              <span className="text-2xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300">Zyre.Luxe</span>
+              <img src={logo} alt="Zyre.Luxe Logo" className="h-6 w-6 xs:h-8 xs:w-8 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
+              <span className="text-xl xs:text-2xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300">Zyre.Luxe</span>
             </a>
-            <div className="ml-4">
+            <div className="ml-2 xs:ml-4 hidden sm:block">
               <p className="text-xs text-[#EAEAEA]/70 font-['Inter'] italic">Data that speaks. Intelligence that sells.</p>
             </div>
           </div>
           <div className="flex space-x-2">
             <button
               onClick={onLogout}
-              className="px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30"
+              className="px-3 xs:px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30 min-h-[44px] touch-feedback"
             >
               Logout
             </button>
@@ -350,34 +350,34 @@ ${action.descripcion}
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-8 py-8">
+      <main className="relative z-10 px-4 xs:px-6 sm:px-8 py-6 xs:py-8 animate-slide-up">
         {/* Metrics Summary */}
-        <div className="mb-8">
-          <div className="bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] p-6 rounded-2xl shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-[#EAEAEA] font-['Cinzel'] tracking-wide">Your Current Metrics</h2>
+        <div className="mb-6 xs:mb-8">
+          <div className="bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] p-4 xs:p-6 rounded-2xl shadow-2xl">
+            <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mb-4 xs:mb-6 gap-4">
+              <h2 className="text-lg xs:text-xl font-semibold text-[#EAEAEA] font-['Cinzel'] tracking-wide">Your Current Metrics</h2>
               <button
                 onClick={() => setShowSalesEdit(true)}
-                className="px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30"
+                className="px-3 xs:px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded-lg hover:bg-[#F5E6C5] transition-all duration-300 text-sm font-['Inter'] font-medium shadow-lg hover:shadow-[#D4AF37]/30 min-h-[44px] w-full xs:w-auto touch-feedback"
               >
                 Edit Metrics
               </button>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 gap-4 xs:gap-6">
               <div className="text-center group">
-                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.clicks}</div>
+                  <div className="text-xl xs:text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.clicks}</div>
                   <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Clicks</div>
                 </div>
                 <div className="text-center group">
-                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.sales}</div>
+                  <div className="text-xl xs:text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.sales}</div>
                   <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Sales</div>
                 </div>
                 <div className="text-center group">
-                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.commissions}</div>
+                  <div className="text-xl xs:text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.commissions}</div>
                   <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">Commissions</div>
                 </div>
                 <div className="text-center group">
-                  <div className="text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.ctr}</div>
+                  <div className="text-xl xs:text-2xl font-bold text-[#D4AF37] mb-1 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]">{metrics.ctr}</div>
                   <div className="text-xs text-[#EAEAEA]/70 font-['Inter'] uppercase tracking-wider">CTR</div>
                 </div>
             </div>
@@ -387,44 +387,56 @@ ${action.descripcion}
 
         {/* Metrics Grid */}
         {instagramMetrics && (
-          <div className="grid grid-cols-3 gap-8 mb-12">
-            <MetricCard
-              title="Reach"
-              value={instagramMetrics.reach}
-              insight="Unique accounts reached"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Interactions"
-              value={instagramMetrics.interactions}
-              insight="Total engagement"
-              isOpportunity={true}
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Followers"
-              value={instagramMetrics.followers}
-              insight="Current follower count"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Follower Growth"
-              value={instagramMetrics.follower_growth}
-              insight="Growth in last 7 days"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Reel Views"
-              value={instagramMetrics.reel_views}
-              insight="Total video views"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Profile Clicks"
-              value={instagramMetrics.profile_clicks}
-              insight="Link clicks from profile"
-              onEdit={handleMetricEdit}
-            />
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 xs:gap-6 sm:gap-8 mb-8 xs:mb-12">
+            <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <MetricCard
+                title="Reach"
+                value={instagramMetrics.reach}
+                insight="Unique accounts reached"
+                onEdit={handleMetricEdit}
+              />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <MetricCard
+                title="Interactions"
+                value={instagramMetrics.interactions}
+                insight="Total engagement"
+                isOpportunity={true}
+                onEdit={handleMetricEdit}
+              />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <MetricCard
+                title="Followers"
+                value={instagramMetrics.followers}
+                insight="Current follower count"
+                onEdit={handleMetricEdit}
+              />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <MetricCard
+                title="Follower Growth"
+                value={instagramMetrics.follower_growth}
+                insight="Growth in last 7 days"
+                onEdit={handleMetricEdit}
+              />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
+              <MetricCard
+                title="Reel Views"
+                value={instagramMetrics.reel_views}
+                insight="Total video views"
+                onEdit={handleMetricEdit}
+              />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
+              <MetricCard
+                title="Profile Clicks"
+                value={instagramMetrics.profile_clicks}
+                insight="Link clicks from profile"
+                onEdit={handleMetricEdit}
+              />
+            </div>
           </div>
         )}
 
