@@ -70,6 +70,31 @@
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
+
+  /* Mobile responsive utilities */
+  .mobile-full-width {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+  }
+
+  /* Prevent horizontal scroll */
+  .no-horizontal-scroll {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Responsive text scaling */
+  .responsive-text {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+
+  .responsive-heading {
+    font-size: clamp(1.125rem, 4vw, 1.25rem);
+  }
+
+  .responsive-large {
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+  }
 }
 
 @keyframes slideUp {
