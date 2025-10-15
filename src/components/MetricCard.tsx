@@ -51,18 +51,18 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
   };
 
   return (
-    <div className="relative bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] rounded-xl p-4 xs:p-5 sm:p-6 lg:p-8 hover:border-[#D4AF37] hover:shadow-2xl hover:shadow-[#D4AF37]/20 transition-all duration-500 group overflow-hidden cursor-pointer min-h-[140px] xs:min-h-[150px] sm:min-h-[160px] lg:min-h-[180px] touch-feedback gpu-accelerated w-full">
+    <div className="relative bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] rounded-xl p-3 xs:p-4 sm:p-5 lg:p-6 hover:border-[#D4AF37] hover:shadow-2xl hover:shadow-[#D4AF37]/20 transition-all duration-500 group overflow-hidden cursor-pointer min-h-[130px] xs:min-h-[140px] sm:min-h-[150px] lg:min-h-[160px] touch-feedback gpu-accelerated w-full">
       {/* Subtle glow effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-      <div className="relative z-10 space-y-3 xs:space-y-4">
+      <div className="relative z-10 space-y-2 xs:space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm xs:text-base sm:text-lg font-medium text-[#EAEAEA]/80 uppercase tracking-wider font-['Inter']">
+          <h3 className="text-xs xs:text-sm sm:text-base font-medium text-[#EAEAEA]/80 uppercase tracking-wider font-['Inter'] leading-tight">
             {title}
           </h3>
           <button
             onClick={handleDoubleClick}
-            className="p-2 rounded-full hover:bg-[#D4AF37]/20 transition-colors duration-200 group/icon min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="p-1.5 xs:p-2 rounded-full hover:bg-[#D4AF37]/20 transition-colors duration-200 group/icon min-h-[32px] min-w-[32px] xs:min-h-[36px] xs:min-w-[36px] flex items-center justify-center"
             title={`Edit ${title}`}
           >
             {getIcon(title)}
@@ -70,25 +70,25 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
         </div>
 
         {isEditing ? (
-          <div className="space-y-3">
+          <div className="space-y-2 xs:space-y-3">
             <input
               type="text"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-3 py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5] min-h-[48px]"
+              className="w-full text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-2 xs:px-3 py-1.5 xs:py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5] min-h-[40px] xs:min-h-[44px]"
               autoFocus
             />
-            <div className="flex space-x-2 justify-center">
+            <div className="flex space-x-1.5 xs:space-x-2 justify-center">
               <button
                 onClick={handleSave}
-                className="px-4 py-2 bg-[#D4AF37] text-[#0A0A0A] rounded text-sm font-['Inter'] font-medium hover:bg-[#F5E6C5] transition-colors min-h-[44px] min-w-[70px]"
+                className="px-3 xs:px-4 py-1.5 xs:py-2 bg-[#D4AF37] text-[#0A0A0A] rounded text-xs xs:text-sm font-['Inter'] font-medium hover:bg-[#F5E6C5] transition-colors min-h-[36px] xs:min-h-[40px] min-w-[60px] xs:min-w-[70px]"
               >
                 Save
               </button>
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 bg-[#2C2C2C] text-[#EAEAEA] rounded text-sm font-['Inter'] font-medium hover:bg-[#404040] transition-colors min-h-[44px] min-w-[70px]"
+                className="px-3 xs:px-4 py-1.5 xs:py-2 bg-[#2C2C2C] text-[#EAEAEA] rounded text-xs xs:text-sm font-['Inter'] font-medium hover:bg-[#404040] transition-colors min-h-[36px] xs:min-h-[40px] min-w-[60px] xs:min-w-[70px]"
               >
                 Cancel
               </button>
@@ -96,14 +96,14 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
           </div>
         ) : (
           <div
-            className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+            className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)] leading-tight"
           >
             {value}
           </div>
         )}
 
         {insight && !isEditing && (
-          <p className="text-sm xs:text-base text-[#EAEAEA]/60 font-['Inter'] leading-relaxed">
+          <p className="text-xs xs:text-sm text-[#EAEAEA]/60 font-['Inter'] leading-snug">
             {insight}
           </p>
         )}
