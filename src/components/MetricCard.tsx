@@ -11,12 +11,12 @@ interface MetricCardProps {
 
 const getIcon = (title: string) => {
   switch (title) {
-    case 'Reach': return <Eye className="w-5 h-5 text-[#D4AF37]" />;
-    case 'Interactions': return <MessageCircle className="w-5 h-5 text-[#D4AF37]" />;
-    case 'Followers': return <Users className="w-5 h-5 text-[#D4AF37]" />;
-    case 'Follower Growth': return <TrendingUp className="w-5 h-5 text-[#D4AF37]" />;
-    case 'Reel Views': return <Play className="w-5 h-5 text-[#D4AF37]" />;
-    case 'Profile Clicks': return <Link className="w-5 h-5 text-[#D4AF37]" />;
+    case 'Reach': return <Eye className="w-6 h-6 text-gold-primary" />;
+    case 'Interactions': return <MessageCircle className="w-6 h-6 text-gold-primary" />;
+    case 'Followers': return <Users className="w-6 h-6 text-gold-primary" />;
+    case 'Follower Growth': return <TrendingUp className="w-6 h-6 text-gold-primary" />;
+    case 'Reel Views': return <Play className="w-6 h-6 text-gold-primary" />;
+    case 'Profile Clicks': return <Link className="w-6 h-6 text-gold-primary" />;
     default: return null;
   }
 };
@@ -51,18 +51,18 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
   };
 
   return (
-    <div className="relative bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] rounded-xl p-3 xs:p-4 sm:p-5 lg:p-6 hover:border-[#D4AF37] hover:shadow-2xl hover:shadow-[#D4AF37]/20 transition-all duration-500 group overflow-hidden cursor-pointer min-h-[130px] xs:min-h-[140px] sm:min-h-[150px] lg:min-h-[160px] touch-feedback gpu-accelerated w-full">
-      {/* Subtle glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div className="relative bg-bg-card/95 backdrop-blur-md border border-border-primary rounded-2xl p-4 shadow-soft touch-feedback gpu-accelerated w-full min-h-[140px] overflow-hidden card-hover">
+      {/* Premium gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/5 via-transparent to-electric/5 opacity-0 card-hover:opacity-100 transition-opacity duration-500"></div>
 
-      <div className="relative z-10 space-y-2 xs:space-y-3">
+      <div className="relative z-10 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs xs:text-sm sm:text-base font-medium text-[#EAEAEA]/80 uppercase tracking-wider font-['Inter'] leading-tight">
+          <h3 className="text-responsive-sm font-medium text-text-secondary uppercase tracking-wider font-inter leading-tight">
             {title}
           </h3>
           <button
             onClick={handleDoubleClick}
-            className="p-1.5 xs:p-2 rounded-full hover:bg-[#D4AF37]/20 transition-colors duration-200 group/icon min-h-[32px] min-w-[32px] xs:min-h-[36px] xs:min-w-[36px] flex items-center justify-center"
+            className="p-2 rounded-full touch-feedback transition-colors duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center active:bg-gold-primary/20"
             title={`Edit ${title}`}
           >
             {getIcon(title)}
@@ -70,25 +70,25 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
         </div>
 
         {isEditing ? (
-          <div className="space-y-2 xs:space-y-3">
+          <div className="space-y-3">
             <input
               type="text"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold bg-transparent border-2 border-[#D4AF37] rounded-lg px-2 xs:px-3 py-1.5 xs:py-2 text-[#EAEAEA] font-['Cinzel'] focus:outline-none focus:border-[#F5E6C5] min-h-[40px] xs:min-h-[44px]"
+              className="w-full text-responsive-lg font-bold bg-transparent border-2 border-gold-primary rounded-xl px-3 py-2 text-text-primary font-cinzel focus:outline-none focus:border-gold-secondary min-h-[44px] touch-target"
               autoFocus
             />
-            <div className="flex space-x-1.5 xs:space-x-2 justify-center">
+            <div className="flex space-x-2 justify-center">
               <button
                 onClick={handleSave}
-                className="px-3 xs:px-4 py-1.5 xs:py-2 bg-[#D4AF37] text-[#0A0A0A] rounded text-xs xs:text-sm font-['Inter'] font-medium hover:bg-[#F5E6C5] transition-colors min-h-[36px] xs:min-h-[40px] min-w-[60px] xs:min-w-[70px]"
+                className="px-4 py-2 bg-gold-primary text-dark-primary rounded-xl touch-feedback text-responsive-sm font-inter font-medium min-h-[44px] min-w-[80px] active:scale-95 transition-all duration-200"
               >
                 Save
               </button>
               <button
                 onClick={handleCancel}
-                className="px-3 xs:px-4 py-1.5 xs:py-2 bg-[#2C2C2C] text-[#EAEAEA] rounded text-xs xs:text-sm font-['Inter'] font-medium hover:bg-[#404040] transition-colors min-h-[36px] xs:min-h-[40px] min-w-[60px] xs:min-w-[70px]"
+                className="px-4 py-2 bg-border-secondary text-text-primary rounded-xl touch-feedback text-responsive-sm font-inter font-medium min-h-[44px] min-w-[80px] active:scale-95 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -96,21 +96,21 @@ export function MetricCard({ title, value, insight, isOpportunity, onEdit }: Met
           </div>
         ) : (
           <div
-            className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)] leading-tight"
+            className="text-responsive-lg font-bold text-text-primary font-cinzel card-hover:text-gold-primary transition-colors duration-300 card-hover:drop-shadow-glow-gold leading-tight"
           >
             {value}
           </div>
         )}
 
         {insight && !isEditing && (
-          <p className="text-xs xs:text-sm text-[#EAEAEA]/60 font-['Inter'] leading-snug">
+          <p className="text-responsive-sm text-text-muted font-inter leading-snug">
             {insight}
           </p>
         )}
       </div>
 
-      {/* Animated border glow */}
-      <div className="absolute inset-0 rounded-xl border border-[#D4AF37]/0 group-hover:border-[#D4AF37]/50 transition-all duration-500"></div>
+      {/* Premium border glow effect */}
+      <div className="absolute inset-0 rounded-2xl border border-gold-primary/0 card-hover:border-gold-primary/30 transition-all duration-500"></div>
     </div>
   );
 }
