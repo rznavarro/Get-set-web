@@ -360,9 +360,6 @@ ${action.descripcion}
               <img src={logo} alt="Zyre.Luxe Logo" className="h-6 w-6 xs:h-8 xs:w-8 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" />
               <span className="text-xl xs:text-2xl font-bold text-[#EAEAEA] font-['Cinzel'] group-hover:text-[#D4AF37] transition-colors duration-300">Zyre.Luxe</span>
             </a>
-            <div className="ml-2 xs:ml-4 hidden sm:block">
-              <p className="text-xs text-[#EAEAEA]/70 font-['Inter'] italic">Data that speaks. Intelligence that sells.</p>
-            </div>
           </div>
           <div className="flex space-x-2">
             <button
