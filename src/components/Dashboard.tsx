@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
+import { MetricCard } from './MetricCard'; // Import directly for instant render
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 const logo = '/logo.png';
 
-// Lazy load components for instant initial render
-const MetricCard = lazy(() => import('./MetricCard').then(module => ({ default: module.MetricCard })));
+// Lazy load only non-critical components
 const MetricEditForm = lazy(() => import('./MetricEditForm').then(module => ({ default: module.MetricEditForm })));
 const SalesMetricsEditForm = lazy(() => import('./SalesMetricsEditForm').then(module => ({ default: module.SalesMetricsEditForm })));
 const ZyreChat = lazy(() => import('./ZyreChat').then(module => ({ default: module.ZyreChat })));
@@ -420,45 +420,57 @@ ${action.descripcion}
 
         {/* Metrics Grid - Responsive Layout */}
         {instagramMetrics && (
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 xs:gap-6 sm:gap-8 mb-8 xs:mb-10 sm:mb-12">
-            <MetricCard
-              title="Reach"
-              value={instagramMetrics.reach}
-              insight="Unique accounts reached"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Interactions"
-              value={instagramMetrics.interactions}
-              insight="Total engagement"
-              isOpportunity={true}
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Followers"
-              value={instagramMetrics.followers}
-              insight="Current follower count"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Follower Growth"
-              value={instagramMetrics.follower_growth}
-              insight="Growth in last 7 days"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Reel Views"
-              value={instagramMetrics.reel_views}
-              insight="Total video views"
-              onEdit={handleMetricEdit}
-            />
-            <MetricCard
-              title="Profile Clicks"
-              value={instagramMetrics.profile_clicks}
-              insight="Link clicks from profile"
-              onEdit={handleMetricEdit}
-            />
-          </div>
+          <Suspense fallback={
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 xs:gap-6 sm:gap-8 mb-8 xs:mb-10 sm:mb-12">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-[#0F0F0F]/90 backdrop-blur-sm border border-[#2C2C2C] rounded-xl p-3 xs:p-4 sm:p-5 animate-pulse min-h-[130px] xs:min-h-[140px] sm:min-h-[150px]">
+                  <div className="h-4 bg-[#2C2C2C] rounded mb-2"></div>
+                  <div className="h-8 bg-[#2C2C2C] rounded mb-2"></div>
+                  <div className="h-3 bg-[#2C2C2C] rounded"></div>
+                </div>
+              ))}
+            </div>
+          }>
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 xs:gap-6 sm:gap-8 mb-8 xs:mb-10 sm:mb-12">
+              <MetricCard
+                title="Reach"
+                value={instagramMetrics.reach}
+                insight="Unique accounts reached"
+                onEdit={handleMetricEdit}
+              />
+              <MetricCard
+                title="Interactions"
+                value={instagramMetrics.interactions}
+                insight="Total engagement"
+                isOpportunity={true}
+                onEdit={handleMetricEdit}
+              />
+              <MetricCard
+                title="Followers"
+                value={instagramMetrics.followers}
+                insight="Current follower count"
+                onEdit={handleMetricEdit}
+              />
+              <MetricCard
+                title="Follower Growth"
+                value={instagramMetrics.follower_growth}
+                insight="Growth in last 7 days"
+                onEdit={handleMetricEdit}
+              />
+              <MetricCard
+                title="Reel Views"
+                value={instagramMetrics.reel_views}
+                insight="Total video views"
+                onEdit={handleMetricEdit}
+              />
+              <MetricCard
+                title="Profile Clicks"
+                value={instagramMetrics.profile_clicks}
+                insight="Link clicks from profile"
+                onEdit={handleMetricEdit}
+              />
+            </div>
+          </Suspense>
         )}
 
 
