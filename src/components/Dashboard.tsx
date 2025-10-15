@@ -34,91 +34,60 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     }
   }, [onDataLoaded]);
 
-  // Ultra-fast initial state with cached data
-  const [data, setData] = useState<AnalysisData | null>(() => {
-    try {
-      const cached = localStorage.getItem('zyre_cached_analysis');
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const [loading, setLoading] = useState(false); // Start with false for instant render
-  const [metrics, setMetrics] = useState(() => {
-    try {
-      const cached = localStorage.getItem('zyre_cached_metrics');
-      return cached ? JSON.parse(cached) : { clicks: 0, sales: 0, commissions: 0, ctr: 0 };
-    } catch {
-      return { clicks: 0, sales: 0, commissions: 0, ctr: 0 };
-    }
-  });
-
+  const [data, setData] = useState<AnalysisData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [metrics, setMetrics] = useState({ clicks: 0, sales: 0, commissions: 0, ctr: 0 });
   const [showMetricEdit, setShowMetricEdit] = useState(false);
   const [showSalesEdit, setShowSalesEdit] = useState(false);
-  const [instagramMetrics, setInstagramMetrics] = useState<InstagramMetrics | null>(() => {
-    try {
-      const cached = localStorage.getItem('zyre_cached_instagram');
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [instagramMetrics, setInstagramMetrics] = useState<InstagramMetrics | null>(null);
 
 
-  // Memoized data fetching with background updates
-  const fetchData = useCallback(async (isBackgroundUpdate = false) => {
-    try {
-      const analysisData = await getLatestAnalysis();
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const analysisData = await getLatestAnalysis();
 
-      if (!analysisData) return;
+        if (!analysisData) {
+          setData(null);
+          return;
+        }
 
-      // Cache data for instant future loads
-      localStorage.setItem('zyre_cached_analysis', JSON.stringify(analysisData));
-      localStorage.setItem('zyre_cached_metrics', JSON.stringify(metrics));
-      if (instagramMetrics) {
-        localStorage.setItem('zyre_cached_instagram', JSON.stringify(instagramMetrics));
-      }
-
-      // Update state only if not a background update or if we don't have data yet
-      if (!isBackgroundUpdate || !data) {
         setData(analysisData);
         handleDataLoaded(analysisData);
 
-        // Initialize Instagram metrics if not set
-        if (!instagramMetrics && analysisData.metrics) {
+        // Load metrics from localStorage
+        const savedMetrics = localStorage.getItem('user_metrics');
+        if (savedMetrics) {
+          setMetrics(JSON.parse(savedMetrics));
+        }
+
+        // Load instagram metrics from localStorage or initialize from API data
+        const savedInstagramMetrics = localStorage.getItem('instagram_metrics');
+        if (savedInstagramMetrics) {
+          setInstagramMetrics(JSON.parse(savedInstagramMetrics));
+        } else {
+          // Initialize with API data if no saved data exists
           setInstagramMetrics(analysisData.metrics);
         }
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-    }
-  }, [data, metrics, instagramMetrics, handleDataLoaded]);
-
-  useEffect(() => {
-    // Initial load - use cached data immediately
-    if (!data) {
-      fetchData();
     }
 
-    // Background update every 30 seconds for fresh data
-    const backgroundUpdate = setInterval(() => {
-      fetchData(true);
-    }, 30000);
-
-    return () => clearInterval(backgroundUpdate);
-  }, [fetchData, data]);
+    loadData();
+  }, []);
 
 
-  const handleSaveMetrics = useCallback((newMetrics: InstagramMetrics) => {
-      setInstagramMetrics(newMetrics);
-      localStorage.setItem('instagram_metrics', JSON.stringify(newMetrics));
-      localStorage.setItem('zyre_cached_instagram', JSON.stringify(newMetrics));
-      if (onInstagramMetricsUpdate) {
-        onInstagramMetricsUpdate(newMetrics);
-      }
-      setShowMetricEdit(false);
-    }, [onInstagramMetricsUpdate]);
+  const handleSaveMetrics = (newMetrics: InstagramMetrics) => {
+    setInstagramMetrics(newMetrics);
+    localStorage.setItem('instagram_metrics', JSON.stringify(newMetrics));
+    if (onInstagramMetricsUpdate) {
+      onInstagramMetricsUpdate(newMetrics);
+    }
+    setShowMetricEdit(false);
+  };
 
   const handleMetricEdit = (title: string, newValue: string) => {
     if (!instagramMetrics) return;
@@ -154,12 +123,11 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     }
   };
 
-  const handleSaveSalesMetrics = useCallback((newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
+  const handleSaveSalesMetrics = (newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
     setMetrics(newMetrics);
     localStorage.setItem('user_metrics', JSON.stringify(newMetrics));
-    localStorage.setItem('zyre_cached_metrics', JSON.stringify(newMetrics));
     setShowSalesEdit(false);
-  }, []);
+  };
 
   const handleCancelMetricEdit = () => {
     setShowMetricEdit(false);
@@ -348,7 +316,21 @@ ${action.descripcion}
     // Set a flag to show data is loading in background
     setTimeout(() => {
       if (!data) {
-        fetchData();
+        // Reload data in background
+        (async () => {
+          try {
+            const analysisData = await getLatestAnalysis();
+            if (analysisData) {
+              setData(analysisData);
+              handleDataLoaded(analysisData);
+              if (!instagramMetrics && analysisData.metrics) {
+                setInstagramMetrics(analysisData.metrics);
+              }
+            }
+          } catch (error) {
+            console.error('Error loading background data:', error);
+          }
+        })();
       }
     }, 100);
   }
