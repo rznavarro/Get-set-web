@@ -329,8 +329,10 @@ ${action.descripcion}
     onNavigateToPlanes(responseText);
   };
 
-  // Ultra-fast render: show cached data immediately, no loading states
-  if (!data) {
+  // Show loading only on first visit (no cached data)
+  const hasVisitedBefore = localStorage.getItem('has_visited_before') === 'true';
+
+  if (!data && !hasVisitedBefore) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
         <div className="text-[#EAEAEA] text-center">
@@ -339,6 +341,16 @@ ${action.descripcion}
         </div>
       </div>
     );
+  }
+
+  // For returning users, show dashboard immediately with cached data
+  if (!data && hasVisitedBefore) {
+    // Set a flag to show data is loading in background
+    setTimeout(() => {
+      if (!data) {
+        fetchData();
+      }
+    }, 100);
   }
 
   return (
@@ -408,56 +420,44 @@ ${action.descripcion}
 
         {/* Metrics Grid */}
         {instagramMetrics && (
-          <div className="grid grid-cols-1 gap-3 xs:gap-4 sm:gap-6 lg:gap-8 mb-6 xs:mb-8 sm:mb-12">
-            <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <MetricCard
-                title="Reach"
-                value={instagramMetrics.reach}
-                insight="Unique accounts reached"
-                onEdit={handleMetricEdit}
-              />
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <MetricCard
-                title="Interactions"
-                value={instagramMetrics.interactions}
-                insight="Total engagement"
-                isOpportunity={true}
-                onEdit={handleMetricEdit}
-              />
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              <MetricCard
-                title="Followers"
-                value={instagramMetrics.followers}
-                insight="Current follower count"
-                onEdit={handleMetricEdit}
-              />
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <MetricCard
-                title="Follower Growth"
-                value={instagramMetrics.follower_growth}
-                insight="Growth in last 7 days"
-                onEdit={handleMetricEdit}
-              />
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
-              <MetricCard
-                title="Reel Views"
-                value={instagramMetrics.reel_views}
-                insight="Total video views"
-                onEdit={handleMetricEdit}
-              />
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <MetricCard
-                title="Profile Clicks"
-                value={instagramMetrics.profile_clicks}
-                insight="Link clicks from profile"
-                onEdit={handleMetricEdit}
-              />
-            </div>
+          <div className="grid grid-cols-3 gap-8 mb-12">
+            <MetricCard
+              title="Reach"
+              value={instagramMetrics.reach}
+              insight="Unique accounts reached"
+              onEdit={handleMetricEdit}
+            />
+            <MetricCard
+              title="Interactions"
+              value={instagramMetrics.interactions}
+              insight="Total engagement"
+              isOpportunity={true}
+              onEdit={handleMetricEdit}
+            />
+            <MetricCard
+              title="Followers"
+              value={instagramMetrics.followers}
+              insight="Current follower count"
+              onEdit={handleMetricEdit}
+            />
+            <MetricCard
+              title="Follower Growth"
+              value={instagramMetrics.follower_growth}
+              insight="Growth in last 7 days"
+              onEdit={handleMetricEdit}
+            />
+            <MetricCard
+              title="Reel Views"
+              value={instagramMetrics.reel_views}
+              insight="Total video views"
+              onEdit={handleMetricEdit}
+            />
+            <MetricCard
+              title="Profile Clicks"
+              value={instagramMetrics.profile_clicks}
+              insight="Link clicks from profile"
+              onEdit={handleMetricEdit}
+            />
           </div>
         )}
 

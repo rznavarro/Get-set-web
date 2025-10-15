@@ -43,7 +43,8 @@ function App() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          // Preload dashboard data before showing it
+          // Mark as visited and preload dashboard data before showing it
+          localStorage.setItem('has_visited_before', 'true');
           preloadDashboardData().then(() => {
             setCurrentScreen('dashboard');
           });
@@ -95,6 +96,8 @@ function App() {
     localStorage.removeItem('access_granted');
     localStorage.removeItem('user_metrics');
     localStorage.removeItem('instagram_metrics');
+    // Keep cached data for instant reload, but remove visit flag to show loading on next login
+    localStorage.removeItem('has_visited_before');
     setCurrentScreen('welcome');
   };
 
