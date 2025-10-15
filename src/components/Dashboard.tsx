@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { MetricCard } from './MetricCard';
-import { MetricEditForm } from './MetricEditForm';
-import { SalesMetricsEditForm } from './SalesMetricsEditForm';
-import { ZyreChat } from './ZyreChat';
+import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
 import { AnalysisData, getLatestAnalysis } from '../lib/api';
 const logo = '/logo.png';
+
+// Lazy load components for instant initial render
+const MetricCard = lazy(() => import('./MetricCard').then(module => ({ default: module.MetricCard })));
+const MetricEditForm = lazy(() => import('./MetricEditForm').then(module => ({ default: module.MetricEditForm })));
+const SalesMetricsEditForm = lazy(() => import('./SalesMetricsEditForm').then(module => ({ default: module.SalesMetricsEditForm })));
+const ZyreChat = lazy(() => import('./ZyreChat').then(module => ({ default: module.ZyreChat })));
 
 interface InstagramMetrics {
    reach: string;
@@ -31,93 +33,92 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
       onDataLoaded(data);
     }
   }, [onDataLoaded]);
-  const [data, setData] = useState<AnalysisData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState({
-    clicks: 0,
-    sales: 0,
-    commissions: 0,
-    ctr: 0
+
+  // Ultra-fast initial state with cached data
+  const [data, setData] = useState<AnalysisData | null>(() => {
+    try {
+      const cached = localStorage.getItem('zyre_cached_analysis');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
   });
+
+  const [loading, setLoading] = useState(false); // Start with false for instant render
+  const [metrics, setMetrics] = useState(() => {
+    try {
+      const cached = localStorage.getItem('zyre_cached_metrics');
+      return cached ? JSON.parse(cached) : { clicks: 0, sales: 0, commissions: 0, ctr: 0 };
+    } catch {
+      return { clicks: 0, sales: 0, commissions: 0, ctr: 0 };
+    }
+  });
+
   const [showMetricEdit, setShowMetricEdit] = useState(false);
   const [showSalesEdit, setShowSalesEdit] = useState(false);
-  const [instagramMetrics, setInstagramMetrics] = useState<InstagramMetrics | null>(null);
+  const [instagramMetrics, setInstagramMetrics] = useState<InstagramMetrics | null>(() => {
+    try {
+      const cached = localStorage.getItem('zyre_cached_instagram');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
 
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Check if data was preloaded during countdown
-        const preloadedAnalysis = sessionStorage.getItem('preloaded_analysis');
-        const preloadedUserMetrics = sessionStorage.getItem('preloaded_user_metrics');
-        const preloadedInstagramMetrics = sessionStorage.getItem('preloaded_instagram_metrics');
+  // Memoized data fetching with background updates
+  const fetchData = useCallback(async (isBackgroundUpdate = false) => {
+    try {
+      const analysisData = await getLatestAnalysis();
 
-        let analysisData;
+      if (!analysisData) return;
 
-        if (preloadedAnalysis) {
-          // Use preloaded data
-          analysisData = JSON.parse(preloadedAnalysis);
+      // Cache data for instant future loads
+      localStorage.setItem('zyre_cached_analysis', JSON.stringify(analysisData));
+      localStorage.setItem('zyre_cached_metrics', JSON.stringify(metrics));
+      if (instagramMetrics) {
+        localStorage.setItem('zyre_cached_instagram', JSON.stringify(instagramMetrics));
+      }
 
-          // Clear preloaded data from sessionStorage
-          sessionStorage.removeItem('preloaded_analysis');
-          sessionStorage.removeItem('preloaded_user_metrics');
-          sessionStorage.removeItem('preloaded_instagram_metrics');
-        } else {
-          // Fetch fresh data if not preloaded
-          analysisData = await getLatestAnalysis();
-        }
-
-        if (!analysisData) {
-          setData(null);
-          return;
-        }
-
+      // Update state only if not a background update or if we don't have data yet
+      if (!isBackgroundUpdate || !data) {
         setData(analysisData);
-
-        // Notify parent component that data is loaded
         handleDataLoaded(analysisData);
 
-        // Load metrics from preloaded data or localStorage
-        if (preloadedUserMetrics) {
-          setMetrics(JSON.parse(preloadedUserMetrics));
-        } else {
-          const savedMetrics = localStorage.getItem('user_metrics');
-          if (savedMetrics) {
-            setMetrics(JSON.parse(savedMetrics));
-          }
+        // Initialize Instagram metrics if not set
+        if (!instagramMetrics && analysisData.metrics) {
+          setInstagramMetrics(analysisData.metrics);
         }
-
-        // Load instagram metrics from preloaded data or localStorage or initialize from API data
-        if (preloadedInstagramMetrics) {
-          setInstagramMetrics(JSON.parse(preloadedInstagramMetrics));
-        } else {
-          const savedInstagramMetrics = localStorage.getItem('instagram_metrics');
-          if (savedInstagramMetrics) {
-            setInstagramMetrics(JSON.parse(savedInstagramMetrics));
-          } else {
-            // Initialize with API data if no saved data exists
-            setInstagramMetrics(analysisData.metrics);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading dashboard data:', error);
-      } finally {
-        setLoading(false);
       }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    }
+  }, [data, metrics, instagramMetrics, handleDataLoaded]);
+
+  useEffect(() => {
+    // Initial load - use cached data immediately
+    if (!data) {
+      fetchData();
     }
 
-    fetchData();
-  }, []);
+    // Background update every 30 seconds for fresh data
+    const backgroundUpdate = setInterval(() => {
+      fetchData(true);
+    }, 30000);
+
+    return () => clearInterval(backgroundUpdate);
+  }, [fetchData, data]);
 
 
-  const handleSaveMetrics = (newMetrics: InstagramMetrics) => {
-     setInstagramMetrics(newMetrics);
-     localStorage.setItem('instagram_metrics', JSON.stringify(newMetrics));
-     if (onInstagramMetricsUpdate) {
-       onInstagramMetricsUpdate(newMetrics);
-     }
-     setShowMetricEdit(false);
-   };
+  const handleSaveMetrics = useCallback((newMetrics: InstagramMetrics) => {
+      setInstagramMetrics(newMetrics);
+      localStorage.setItem('instagram_metrics', JSON.stringify(newMetrics));
+      localStorage.setItem('zyre_cached_instagram', JSON.stringify(newMetrics));
+      if (onInstagramMetricsUpdate) {
+        onInstagramMetricsUpdate(newMetrics);
+      }
+      setShowMetricEdit(false);
+    }, [onInstagramMetricsUpdate]);
 
   const handleMetricEdit = (title: string, newValue: string) => {
     if (!instagramMetrics) return;
@@ -153,11 +154,12 @@ export function Dashboard({ userCode, onLogout, onEditMetrics, onNavigateToPlane
     }
   };
 
-  const handleSaveSalesMetrics = (newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
+  const handleSaveSalesMetrics = useCallback((newMetrics: { clicks: number; sales: number; commissions: number; ctr: number }) => {
     setMetrics(newMetrics);
     localStorage.setItem('user_metrics', JSON.stringify(newMetrics));
+    localStorage.setItem('zyre_cached_metrics', JSON.stringify(newMetrics));
     setShowSalesEdit(false);
-  };
+  }, []);
 
   const handleCancelMetricEdit = () => {
     setShowMetricEdit(false);
@@ -327,24 +329,20 @@ ${action.descripcion}
     onNavigateToPlanes(responseText);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Loading dashboard...</div>
-      </div>
-    );
-  }
-
+  // Ultra-fast render: show cached data immediately, no loading states
   if (!data) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">No analysis data available</div>
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <div className="text-[#EAEAEA] text-center">
+          <div className="animate-pulse text-2xl mb-2">⚡</div>
+          <div className="text-sm">Loading your analytics...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden gpu-accelerated smooth-scroll no-horizontal-scroll">
+    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden gpu-accelerated smooth-scroll no-horizontal-scroll instant-render">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-radial from-[#0F0F0F] via-[#0A0A0A] to-[#050505] opacity-50"></div>
       {/* Header */}
@@ -468,23 +466,37 @@ ${action.descripcion}
 
       </main>
 
-      {/* Zyre Chat */}
-      <ZyreChat />
+      {/* Lazy loaded components with Suspense for instant initial render */}
+      <Suspense fallback={null}>
+        <ZyreChat />
+      </Suspense>
 
       {showMetricEdit && (
-         <MetricEditForm
-           currentMetrics={instagramMetrics}
-           onSave={handleSaveMetrics}
-           onCancel={handleCancelMetricEdit}
-         />
-       )}
+        <Suspense fallback={
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="animate-pulse text-[#EAEAEA]">Loading...</div>
+          </div>
+        }>
+          <MetricEditForm
+            currentMetrics={instagramMetrics}
+            onSave={handleSaveMetrics}
+            onCancel={handleCancelMetricEdit}
+          />
+        </Suspense>
+      )}
 
       {showSalesEdit && (
-        <SalesMetricsEditForm
-          currentMetrics={metrics}
-          onSave={handleSaveSalesMetrics}
-          onCancel={handleCancelSalesEdit}
-        />
+        <Suspense fallback={
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="animate-pulse text-[#EAEAEA]">Loading...</div>
+          </div>
+        }>
+          <SalesMetricsEditForm
+            currentMetrics={metrics}
+            onSave={handleSaveSalesMetrics}
+            onCancel={handleCancelSalesEdit}
+          />
+        </Suspense>
       )}
     </div>
   );

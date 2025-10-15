@@ -83,6 +83,16 @@
     max-width: 100vw;
   }
 
+  /* Ultra-fast loading utilities */
+  .instant-render {
+    contain: layout style paint;
+    will-change: auto;
+  }
+
+  .background-update {
+    opacity: 0.99; /* Force GPU layer for smooth updates */
+  }
+
   /* Responsive text scaling */
   .responsive-text {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
