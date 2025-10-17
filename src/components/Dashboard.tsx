@@ -435,7 +435,7 @@ ${action.descripcion}
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             <a
-              href="https://www.instagram.com/getsetweb/"
+              href="https://www.instagram.com/get_setweb/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 touch-feedback group"
