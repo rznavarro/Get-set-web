@@ -18,7 +18,7 @@ interface FinancialMetrics {
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('welcome');
-  const [userCode] = useState<string>('Zyre.Luxe');
+  const [userCode] = useState<string>('getsetweb');
   const [dashboardData, setDashboardData] = useState<AnalysisData | null>(null);
   const [financialMetrics, setFinancialMetrics] = useState<FinancialMetrics | null>(null);
   const [countdown, setCountdown] = useState<number>(60);
@@ -113,8 +113,8 @@ function App() {
           <div className="relative z-10 text-center w-full max-w-sm animate-fade-in">
             {/* Logo */}
             <div className="mb-6 xs:mb-8">
-              <img src="/logo.png" alt="Zyre.Luxe Logo" className="w-16 h-16 xs:w-20 xs:h-20 mx-auto mb-4" />
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-[#EAEAEA] mb-2 font-['Cinzel']">Zyre.Luxe</h1>
+              <img src="/logo.png" alt="Get Set Web Logo" className="w-16 h-16 xs:w-20 xs:h-20 mx-auto mb-4" />
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-[#EAEAEA] mb-2 font-['Cinzel']">Get Set Web</h1>
               <p className="text-[#EAEAEA]/70 font-['Inter'] text-sm xs:text-base">Premium Analytics Access</p>
             </div>
 

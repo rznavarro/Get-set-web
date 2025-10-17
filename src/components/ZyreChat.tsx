@@ -8,13 +8,13 @@ interface Message {
   timestamp: Date;
 }
 
-export function ZyreChat() {
+export function GetSetWebChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hello! I\'m Zyre.Luxe AI assistant. How can I help you with your Instagram analytics today?',
+      text: 'Hello! I\'m Get Set Web AI assistant. How can I help you with your Instagram analytics today?',
       isUser: false,
       timestamp: new Date()
     }
@@ -84,10 +84,10 @@ export function ZyreChat() {
         <div className="bg-[#0F0F0F]/90 border-b border-[#2C2C2C] p-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center">
-              <span className="text-[#0A0A0A] font-bold text-sm font-['Cinzel']">Z</span>
+              <span className="text-[#0A0A0A] font-bold text-sm font-['Cinzel']">G</span>
             </div>
             <div>
-              <h3 className="text-[#EAEAEA] font-['Cinzel'] text-sm font-medium">Zyre.Luxe AI</h3>
+              <h3 className="text-[#EAEAEA] font-['Cinzel'] text-sm font-medium">Get Set Web AI</h3>
               <p className="text-[#EAEAEA]/60 text-xs font-['Inter']">Online</p>
             </div>
           </div>

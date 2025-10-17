@@ -24,7 +24,7 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (accessCode.toLowerCase() === 'zyre.luxe' || accessCode === 'Zyre.Luxe') {
+    if (accessCode.toLowerCase() === 'getsetweb') {
       localStorage.setItem('access_granted', 'true');
       onAccessGranted();
     } else {
@@ -40,8 +40,8 @@ export function WelcomeScreen({ onAccessGranted }: WelcomeScreenProps) {
         {/* Header */}
         <div className="mb-6 xs:mb-8">
           <div className="flex justify-center items-center space-x-3 mb-4">
-            <img src={logo} alt="Zyre.Luxe Logo" className="w-10 h-10 xs:w-12 xs:h-12" />
-            <h1 className="text-2xl xs:text-3xl font-bold text-[#EAEAEA] font-['Cinzel']">Zyre.Luxe</h1>
+            <img src={logo} alt="Get Set Web Logo" className="w-10 h-10 xs:w-12 xs:h-12" />
+            <h1 className="text-2xl xs:text-3xl font-bold text-[#EAEAEA] font-['Cinzel']">Get Set Web</h1>
           </div>
           <p className="text-center text-[#EAEAEA]/70 font-['Inter'] text-sm xs:text-base">Ingresa tu código de acceso</p>
         </div>

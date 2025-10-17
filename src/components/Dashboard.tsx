@@ -6,7 +6,7 @@ const logo = '/logo.png';
 // Lazy load only non-critical components
 const MetricEditForm = lazy(() => import('./MetricEditForm').then(module => ({ default: module.MetricEditForm })));
 const SalesMetricsEditForm = lazy(() => import('./SalesMetricsEditForm').then(module => ({ default: module.SalesMetricsEditForm })));
-const ZyreChat = lazy(() => import('./ZyreChat').then(module => ({ default: module.ZyreChat })));
+const GetSetWebChat = lazy(() => import('./ZyreChat').then(module => ({ default: module.GetSetWebChat })));
 
 interface InstagramMetrics {
    reach: string;
@@ -435,19 +435,19 @@ ${action.descripcion}
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             <a
-              href="https://www.instagram.com/zyre.luxe/"
+              href="https://www.instagram.com/getsetweb/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 touch-feedback group"
             >
               <img
                 src={logo}
-                alt="Zyre.Luxe Logo"
+                alt="Get Set Web Logo"
                 className="h-8 w-8 xs:h-10 xs:w-10 filter brightness-0 invert group-active:brightness-100 group-active:invert-0 transition-all duration-300"
                 loading="lazy"
               />
               <span className="text-responsive-lg font-bold text-text-primary font-cinzel group-active:text-gold-primary transition-colors duration-300 truncate">
-                Zyre.Luxe
+                Get Set Web
               </span>
             </a>
           </div>
@@ -667,7 +667,7 @@ ${action.descripcion}
 
       {/* Lazy loaded components with Suspense for instant initial render */}
       <Suspense fallback={null}>
-        <ZyreChat />
+        <GetSetWebChat />
       </Suspense>
 
       {showMetricEdit && (
