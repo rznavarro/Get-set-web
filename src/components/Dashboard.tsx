@@ -443,7 +443,7 @@ ${action.descripcion}
               <img
                 src={logo}
                 alt="Get Set Web Logo"
-                className="h-8 w-8 xs:h-10 xs:w-10 filter brightness-0 invert group-active:brightness-100 group-active:invert-0 transition-all duration-300"
+                className="h-6 w-6 xs:h-8 xs:w-8 filter brightness-0 invert group-active:brightness-100 group-active:invert-0 transition-all duration-300"
                 loading="lazy"
               />
               <span className="text-responsive-lg font-bold text-text-primary font-cinzel group-active:text-gold-primary transition-colors duration-300 truncate">

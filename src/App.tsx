@@ -45,6 +45,7 @@ function App() {
           clearInterval(timer);
           // Mark as visited and preload dashboard data before showing it
           localStorage.setItem('has_visited_before', 'true');
+          // Preload data and show dashboard immediately with all metrics
           preloadDashboardData().then(() => {
             setCurrentScreen('dashboard');
           });
